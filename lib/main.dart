@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:thesis_scanner/device.dart';
 
+import 'package:thesis_scanner/pages/list.dart';
+import 'package:thesis_scanner/pages/map.dart';
+
 final regions = <Region>[
   Region(identifier: 'Thesis'),
 ];
@@ -15,14 +18,15 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Device> devices = [];
+  int _currentIndex = 1;
+  var devices = Device.devices;
 
   @override
   void initState() {
@@ -32,27 +36,17 @@ class _MyAppState extends State<MyApp> {
 
   void startBeaconRanging() {
     flutterBeacon.ranging(regions).listen((RangingResult result) {
-      print('Found ${result.beacons.length} beacons');
       setState(() {
-        List<Device> detectedDevices = [];
-
-        for (Beacon beacon in result.beacons) {
-          Device? device = devices.firstWhereOrNull(
-            (d) => d.compare(beacon),
+        for (Device device in devices) {
+          Beacon? beacon = result.beacons.firstWhereOrNull(
+            (b) =>
+                b.proximityUUID == device.uuid &&
+                b.major == device.major &&
+                b.minor == device.minor,
           );
 
-          if (device == null) {
-            device = Device.createFromBeacon(beacon);
-            devices.add(device);
-          }
-
-          device.addEntry(beacon.rssi);
-          detectedDevices.add(device);
+          device.addEntry(beacon?.rssi);
         }
-
-        devices.where((d) => !detectedDevices.contains(d)).forEach((d) {
-          d.addEntry(null);
-        });
       });
     });
   }
@@ -61,41 +55,35 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Thesis scanner'),
-          ),
-          body: Column(
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      devices.clear();
-                    });
-                  },
-                  child: const Text('Reset')),
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: devices.length,
-                itemBuilder: (context, index) {
-                  Device device = devices[index];
-
-                  var (rssi, n, miss, distance) = device.getAverageDistance();
-
-                  return ListTile(
-                    title: Text(
-                        '${device.getName()} - ${device.major}#${device.minor}'),
-                    subtitle: Text(
-                      '${distance?.toStringAsFixed(2)}m (${rssi.toStringAsFixed(2)}/${device.txPower})',
-                    ),
-                    trailing: Text(
-                      '$n/${n + miss}',
-                    ),
-                  );
-                },
-              ),
-            ],
-          )),
+        appBar: AppBar(
+          title: const Text('Thesis scanner'),
+        ),
+        body: Column(
+          children: [
+            if (_currentIndex == 0)
+              ListPage(devices: devices)
+            else if (_currentIndex == 1)
+              MapPage(devices: devices),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'List',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Map',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

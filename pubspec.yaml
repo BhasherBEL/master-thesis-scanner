@@ -14,7 +14,6 @@ dependencies:
   collection: ^1.18.0
   dchs_flutter_beacon: ^0.6.4
   beacon_distance: ^0.0.3
-  #woosmap_flutter: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +22,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/

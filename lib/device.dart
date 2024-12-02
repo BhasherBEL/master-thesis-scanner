@@ -2,30 +2,55 @@ import 'package:beacon_distance/beacon_distance.dart';
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 
 class Device {
+  final String name;
   final String uuid;
   final int major;
   final int minor;
-  final int? txPower;
+  final int txPower;
+  final double X;
+  final double Y;
+
+  static final devices = <Device>[
+    Device(
+      'Desk',
+      'E5CA1ADE-F007-BA11-0000-000000000000',
+      208,
+      62918,
+      -59,
+      0.4,
+      0.74,
+    ),
+    Device(
+      'Poteau1',
+      'E5CA1ADE-F007-BA11-0000-000000000000',
+      40,
+      23783,
+      -59,
+      0.54,
+      0.68,
+    ),
+    Device(
+      'Poteau2',
+      'E5CA1ADE-F007-BA11-0000-000000000000',
+      104,
+      43185,
+      -59,
+      0.54,
+      0.55,
+    ),
+  ];
 
   List<int?> rssis = [];
 
   Device(
+    this.name,
     this.uuid,
     this.major,
     this.minor,
     this.txPower,
+    this.X,
+    this.Y,
   );
-
-  static Device createFromBeacon(Beacon beacon) {
-    Device device = Device(
-      beacon.proximityUUID,
-      beacon.major,
-      beacon.minor,
-      beacon.txPower,
-    );
-
-    return device;
-  }
 
   bool compare(Beacon beacon) {
     return uuid == beacon.proximityUUID &&
@@ -38,7 +63,7 @@ class Device {
     rssis.add(rssi);
   }
 
-  (double, int, int, double?) getAverageDistance([int n = 5, int max = 10]) {
+  (double, int, int, double) getAverageDistance([int n = 5, int max = 10]) {
     List<int?> subRssis =
         rssis.length > 10 ? rssis.sublist(rssis.length - max) : rssis;
 
@@ -57,21 +82,18 @@ class Device {
       if (realN >= n) break;
     }
 
-    if (realN == 0) return (0, realN, miss, null);
+    if (realN == 0) return (0, realN, miss, -1.0);
 
     double avgRssi = nRssis.reduce((a, b) => a + b) / realN;
 
-    double? avgDistance = txPower != null
-        ? BeaconUtil.instance.calculateDistance(txPower!, avgRssi)
-        : null;
+    double avgDistance =
+        BeaconUtil.instance.calculateDistance(txPower, avgRssi);
 
     return (avgRssi, realN, miss, avgDistance);
   }
 
-  String getName() {
-    if (major == 104) return 'Poteau 2';
-    if (major == 40) return 'Poteau 1';
-    if (major == 208) return 'Desk';
-    return 'Unknown';
+  double getAverageDistanceOnly([int n = 5, int max = 10]) {
+    var (_, _, _, dst) = getAverageDistance(n, max);
+    return dst;
   }
 }
