@@ -8,11 +8,12 @@ class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (devices.isEmpty)
+    if (devices.isEmpty) {
       return const Text(
         'No beacon detected',
         textAlign: TextAlign.center,
       );
+    }
 
     return ListView.builder(
       scrollDirection: Axis.vertical,

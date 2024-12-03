@@ -5,6 +5,7 @@ import 'package:thesis_scanner/device.dart';
 
 import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/map.dart';
+import 'package:thesis_scanner/pages/record.dart';
 
 final regions = <Region>[
   Region(identifier: 'Thesis'),
@@ -27,6 +28,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _currentIndex = 1;
   var devices = Device.devices;
+  var record = true;
 
   @override
   void initState() {
@@ -36,18 +38,20 @@ class _MyAppState extends State<MyApp> {
 
   void startBeaconRanging() {
     flutterBeacon.ranging(regions).listen((RangingResult result) {
-      setState(() {
-        for (Device device in devices) {
-          Beacon? beacon = result.beacons.firstWhereOrNull(
-            (b) =>
-                b.proximityUUID == device.uuid &&
-                b.major == device.major &&
-                b.minor == device.minor,
-          );
+      if (record) {
+        setState(() {
+          for (Device device in devices) {
+            Beacon? beacon = result.beacons.firstWhereOrNull(
+              (b) =>
+                  b.proximityUUID == device.uuid &&
+                  b.major == device.major &&
+                  b.minor == device.minor,
+            );
 
-          device.addEntry(beacon?.rssi);
-        }
-      });
+            device.addEntry(beacon?.rssi);
+          }
+        });
+      }
     });
   }
 
@@ -63,7 +67,17 @@ class _MyAppState extends State<MyApp> {
             if (_currentIndex == 0)
               ListPage(devices: devices)
             else if (_currentIndex == 1)
-              MapPage(devices: devices),
+              MapPage(devices: devices)
+            else if (_currentIndex == 2)
+              RecordPage(
+                devices: devices,
+                record: record,
+                setRecord: (bool r) {
+                  setState(() {
+                    record = r;
+                  });
+                },
+              ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -80,6 +94,10 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
               label: 'Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.save),
+              label: 'Record',
             ),
           ],
         ),

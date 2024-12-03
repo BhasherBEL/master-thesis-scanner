@@ -9,34 +9,58 @@ class Device {
   final int txPower;
   final double X;
   final double Y;
+  final double am;
 
   static final devices = <Device>[
     Device(
-      'Desk',
+      'Thesis-2 - center',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       208,
       62918,
       -59,
-      0.4,
-      0.74,
+      200,
+      370,
+      0.6,
     ),
     Device(
-      'Poteau1',
+      'Thesis-1 - right',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       40,
       23783,
       -59,
-      0.54,
-      0.68,
+      380,
+      10,
+      1,
     ),
     Device(
-      'Poteau2',
+      'Thesis-3 - left',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       104,
       43185,
       -59,
-      0.54,
-      0.55,
+      30,
+      10,
+      1,
+    ),
+    Device(
+      'Thesis-4 - door',
+      'E5CA1ADE-F007-BA11-0000-000000000000',
+      140,
+      58820,
+      -59,
+      550,
+      260,
+      1,
+    ),
+    Device(
+      'Thesis-5 - poteau',
+      'E5CA1ADE-F007-BA11-0000-000000000000',
+      56,
+      48560,
+      -59,
+      750,
+      270,
+      1,
     ),
   ];
 
@@ -50,6 +74,7 @@ class Device {
     this.txPower,
     this.X,
     this.Y,
+    this.am,
   );
 
   bool compare(Beacon beacon) {
@@ -65,7 +90,7 @@ class Device {
 
   (double, int, int, double) getAverageDistance([int n = 5, int max = 10]) {
     List<int?> subRssis =
-        rssis.length > 10 ? rssis.sublist(rssis.length - max) : rssis;
+        rssis.length > max ? rssis.sublist(rssis.length - max) : rssis;
 
     List<int> nRssis = [];
 
