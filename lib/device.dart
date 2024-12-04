@@ -12,18 +12,18 @@ class Device {
   final double am;
 
   static final devices = <Device>[
+    // Device(
+    //   'Thesis-2 - center',
+    //   'E5CA1ADE-F007-BA11-0000-000000000000',
+    //   208,
+    //   62918,
+    //   -59,
+    //   200,
+    //   370,
+    //   0.6,
+    // ),
     Device(
-      'Thesis-2 - center',
-      'E5CA1ADE-F007-BA11-0000-000000000000',
-      208,
-      62918,
-      -59,
-      200,
-      370,
-      0.6,
-    ),
-    Device(
-      'Thesis-1 - right',
+      'Thesis-1 - Bed',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       40,
       23783,
@@ -32,18 +32,18 @@ class Device {
       10,
       1,
     ),
+    // Device(
+    //   'Thesis-3 - left',
+    //   'E5CA1ADE-F007-BA11-0000-000000000000',
+    //   104,
+    //   43185,
+    //   -59,
+    //   30,
+    //   10,
+    //   1,
+    // ),
     Device(
-      'Thesis-3 - left',
-      'E5CA1ADE-F007-BA11-0000-000000000000',
-      104,
-      43185,
-      -59,
-      30,
-      10,
-      1,
-    ),
-    Device(
-      'Thesis-4 - door',
+      'Thesis-4 - Door',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       140,
       58820,
@@ -53,7 +53,7 @@ class Device {
       1,
     ),
     Device(
-      'Thesis-5 - poteau',
+      'Thesis-5 - TV',
       'E5CA1ADE-F007-BA11-0000-000000000000',
       56,
       48560,
@@ -62,6 +62,18 @@ class Device {
       270,
       1,
     ),
+    // Gen 2
+    // Device(
+    //   'Thesis-6 - center',
+    //   'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
+    //   //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
+    //   100,
+    //   49494,
+    //   -59,
+    //   300,
+    //   370,
+    //   1,
+    // ),
   ];
 
   List<int?> rssis = [];
