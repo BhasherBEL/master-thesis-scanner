@@ -29,7 +29,7 @@ class ListPage extends StatelessWidget {
             '${device.name} - ${device.major}#${device.minor}',
           ),
           subtitle: Text(
-            '${distance?.toStringAsFixed(2)}m (${rssi.toStringAsFixed(2)}/${device.txPower})',
+            '${distance.toStringAsFixed(2)}m (${rssi.toStringAsFixed(2)}/${device.txPower})',
           ),
           trailing: Text(
             '$n/${n + miss}',

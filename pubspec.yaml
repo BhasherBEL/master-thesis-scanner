@@ -14,6 +14,7 @@ dependencies:
   collection: ^1.18.0
   dchs_flutter_beacon: ^0.6.4
   beacon_distance: ^0.0.3
+  fl_chart: ^0.69.2
 
 dev_dependencies:
   flutter_test:

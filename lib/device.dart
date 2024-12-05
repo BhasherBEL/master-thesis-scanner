@@ -1,5 +1,10 @@
+import 'dart:math';
+
 import 'package:beacon_distance/beacon_distance.dart';
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
+import 'package:thesis_scanner/utils/kalman.dart';
+import 'package:collection/collection.dart';
+import 'package:thesis_scanner/utils/rssi2meters.dart';
 
 class Device {
   final String name;
@@ -28,8 +33,8 @@ class Device {
       40,
       23783,
       -59,
-      380,
-      10,
+      6,
+      5,
       1,
     ),
     // Device(
@@ -48,8 +53,8 @@ class Device {
       140,
       58820,
       -59,
-      550,
-      260,
+      0,
+      5,
       1,
     ),
     Device(
@@ -58,8 +63,8 @@ class Device {
       56,
       48560,
       -59,
-      750,
-      270,
+      5,
+      0,
       1,
     ),
     // Gen 2
@@ -132,5 +137,39 @@ class Device {
   double getAverageDistanceOnly([int n = 5, int max = 10]) {
     var (_, _, _, dst) = getAverageDistance(n, max);
     return dst;
+  }
+
+  List<int> get validRssis {
+    return rssis.where((rssi) => rssi != null).map((i) => i!).toList();
+  }
+
+  List<num> get distances {
+    return validRssis
+        .map(
+          (rssi) => rssi2meters(rssi, txPower),
+        )
+        .toList();
+  }
+
+  List<num> get kalmanDistances {
+    KalmanFilter kf = KalmanFilter(
+      0.25,
+      1.4,
+      0,
+      0, //rssis.firstWhereOrNull((r) => r != null)?.toDouble() ?? 0,
+    );
+    return validRssis
+        .map(
+          (rssi) => kf.getFilteredValue(
+            min(
+              20,
+              rssi2meters(
+                rssi,
+                txPower,
+              ).toDouble(),
+            ),
+          ),
+        )
+        .toList();
   }
 }

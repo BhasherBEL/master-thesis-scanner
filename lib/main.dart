@@ -1,8 +1,9 @@
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:thesis_scanner/device.dart';
 
+import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/pages/chart.dart';
 import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/map.dart';
 import 'package:thesis_scanner/pages/record.dart';
@@ -62,25 +63,31 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Thesis scanner'),
         ),
-        body: Column(
-          children: [
-            if (_currentIndex == 0)
-              ListPage(devices: devices)
-            else if (_currentIndex == 1)
-              MapPage(devices: devices)
-            else if (_currentIndex == 2)
-              RecordPage(
-                devices: devices,
-                record: record,
-                setRecord: (bool r) {
-                  setState(() {
-                    record = r;
-                  });
-                },
-              ),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_currentIndex == 0)
+                ListPage(devices: devices)
+              else if (_currentIndex == 1)
+                ChartPage(devices: devices)
+              else if (_currentIndex == 2)
+                MapPage(devices: devices)
+              else if (_currentIndex == 3)
+                RecordPage(
+                  devices: devices,
+                  record: record,
+                  setRecord: (bool r) {
+                    setState(() {
+                      record = r;
+                    });
+                  },
+                ),
+            ],
+          ),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
           onTap: (index) {
             setState(() {
               _currentIndex = index;
@@ -90,6 +97,10 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(
               icon: Icon(Icons.list),
               label: 'List',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart),
+              label: 'Charts',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
