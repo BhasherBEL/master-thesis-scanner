@@ -88,15 +88,17 @@ class RoomPainter extends CustomPainter {
 
     for (final device in devices) {
       final p = mapToScreen(Offset(device.X, device.Y));
-
-      final d = device.kalmanDistances.last.toDouble();
-      final size = Size(d * scaleX * 2, d * scaleY * 2);
-
       canvas.drawCircle(p, 8, beaconPaint);
-      canvas.drawOval(
-        Offset(p.dx - size.height / 2, p.dy - size.width / 2) & size,
-        beaconDistPaint,
-      );
+
+      if (device.kalmanDistances.isNotEmpty) {
+        final d = device.kalmanDistances.last.toDouble();
+        final size = Size(d * scaleX * 2, d * scaleY * 2);
+
+        canvas.drawOval(
+          Offset(p.dx - size.height / 2, p.dy - size.width / 2) & size,
+          beaconDistPaint,
+        );
+      }
     }
   }
 

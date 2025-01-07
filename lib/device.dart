@@ -27,16 +27,16 @@ class Device {
     //   370,
     //   0.6,
     // ),
-    Device(
-      'Thesis-1 - Bed',
-      'E5CA1ADE-F007-BA11-0000-000000000000',
-      40,
-      23783,
-      -59,
-      6,
-      5,
-      1,
-    ),
+    // Device( // 2
+    //   'Thesis-1 - Bed',
+    //   'E5CA1ADE-F007-BA11-0000-000000000000',
+    //   40,
+    //   23783,
+    //   -59,
+    //   6,
+    //   5,
+    //   1,
+    // ),
     // Device(
     //   'Thesis-3 - left',
     //   'E5CA1ADE-F007-BA11-0000-000000000000',
@@ -47,38 +47,60 @@ class Device {
     //   10,
     //   1,
     // ),
-    Device(
-      'Thesis-4 - Door',
-      'E5CA1ADE-F007-BA11-0000-000000000000',
-      140,
-      58820,
-      -59,
-      0,
-      5,
-      1,
-    ),
-    Device(
-      'Thesis-5 - TV',
-      'E5CA1ADE-F007-BA11-0000-000000000000',
-      56,
-      48560,
-      -59,
-      5,
-      0,
-      1,
-    ),
-    // Gen 2
-    // Device(
-    //   'Thesis-6 - center',
-    //   'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
-    //   //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
-    //   100,
-    //   49494,
+    // Device( // 2
+    //   'Thesis-4 - Door',
+    //   'E5CA1ADE-F007-BA11-0000-000000000000',
+    //   140,
+    //   58820,
     //   -59,
-    //   300,
-    //   370,
+    //   0,
+    //   5,
     //   1,
     // ),
+    // Device(
+    //   'Thesis-5 - TV',
+    //   'E5CA1ADE-F007-BA11-0000-000000000000',
+    //   56,
+    //   48560,
+    //   -59,
+    //   5,
+    //   0,
+    //   1,
+    // ),
+    // Gen 2
+    Device(
+      'Thesis-6 - Tv',
+      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
+      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
+      100,
+      49494,
+      -65,
+      5,
+      0,
+      1,
+    ),
+    Device(
+      'Thesis-7 - Bed',
+      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
+      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
+      100,
+      49495,
+      -65,
+      6,
+      5,
+      1,
+    ),
+    Device(
+      'Thesis-8 - Door',
+      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
+      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
+      100,
+      49496,
+      -65,
+      0,
+      5,
+      1,
+    ),
   ];
 
   List<int?> rssis = [];
@@ -153,7 +175,8 @@ class Device {
 
   List<num> get kalmanDistances {
     KalmanFilter kf = KalmanFilter(
-      0.25,
+      0.1,
+      //0.25,
       1.4,
       0,
       0, //rssis.firstWhereOrNull((r) => r != null)?.toDouble() ?? 0,

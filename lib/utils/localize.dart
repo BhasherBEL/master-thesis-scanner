@@ -12,7 +12,13 @@ Map<T, double> getNBiggestValues<T>(Map<T, double> map, int n) {
   Map<Device, double> distances = {};
 
   for (var device in devices) {
-    distances[device] = device.kalmanDistances.last.toDouble();
+    if (device.kalmanDistances.isNotEmpty) {
+      distances[device] = device.kalmanDistances.last.toDouble();
+    }
+  }
+
+  if (distances.length < 3) {
+    return (0, 0);
   }
 
   distances = getNBiggestValues(distances, 3);

@@ -24,6 +24,13 @@ class ChartPage extends StatelessWidget {
       );
     }
 
+    if (devices.every((device) => device.validRssis.isEmpty)) {
+      return const Text(
+        "No data",
+        textAlign: TextAlign.center,
+      );
+    }
+
     var (x, y) = localize(devices);
 
     return Column(
