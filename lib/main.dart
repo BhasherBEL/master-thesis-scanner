@@ -7,6 +7,8 @@ import 'package:thesis_scanner/pages/chart.dart';
 import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/map.dart';
 import 'package:thesis_scanner/pages/record.dart';
+import 'package:thesis_scanner/utils/logging.dart';
+import 'package:thesis_scanner/utils/mqtt.dart';
 
 final regions = <Region>[
   Region(identifier: 'Thesis'),
@@ -15,6 +17,8 @@ final regions = <Region>[
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await flutterBeacon.initializeAndCheckScanning;
+  await initLogging();
+  await mqttConnect('scanner_app');
 
   runApp(const MyApp());
 }

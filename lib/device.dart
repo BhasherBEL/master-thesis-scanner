@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:beacon_distance/beacon_distance.dart';
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:thesis_scanner/utils/kalman.dart';
-import 'package:collection/collection.dart';
 import 'package:thesis_scanner/utils/rssi2meters.dart';
 
 class Device {
@@ -16,92 +15,12 @@ class Device {
   final double Y;
   final double am;
 
-  static final devices = <Device>[
-    // Device(
-    //   'Thesis-2 - center',
-    //   'E5CA1ADE-F007-BA11-0000-000000000000',
-    //   208,
-    //   62918,
-    //   -59,
-    //   200,
-    //   370,
-    //   0.6,
-    // ),
-    // Device( // 2
-    //   'Thesis-1 - Bed',
-    //   'E5CA1ADE-F007-BA11-0000-000000000000',
-    //   40,
-    //   23783,
-    //   -59,
-    //   6,
-    //   5,
-    //   1,
-    // ),
-    // Device(
-    //   'Thesis-3 - left',
-    //   'E5CA1ADE-F007-BA11-0000-000000000000',
-    //   104,
-    //   43185,
-    //   -59,
-    //   30,
-    //   10,
-    //   1,
-    // ),
-    // Device( // 2
-    //   'Thesis-4 - Door',
-    //   'E5CA1ADE-F007-BA11-0000-000000000000',
-    //   140,
-    //   58820,
-    //   -59,
-    //   0,
-    //   5,
-    //   1,
-    // ),
-    // Device(
-    //   'Thesis-5 - TV',
-    //   'E5CA1ADE-F007-BA11-0000-000000000000',
-    //   56,
-    //   48560,
-    //   -59,
-    //   5,
-    //   0,
-    //   1,
-    // ),
-    // Gen 2
-    Device(
-      'Thesis-6 - Tv',
-      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
-      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
-      100,
-      49494,
-      -65,
-      5,
-      0,
-      1,
-    ),
-    Device(
-      'Thesis-7 - Bed',
-      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
-      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
-      100,
-      49495,
-      -65,
-      6,
-      5,
-      1,
-    ),
-    Device(
-      'Thesis-8 - Door',
-      'DDE807AE-4D48-5E96-A947-89E4C7E2FD4B',
-      //'4BFDE2-C7-E489-47A9-965E-484DAE07E8DD'
-      100,
-      49496,
-      -65,
-      0,
-      5,
-      1,
-    ),
-  ];
+  static final devices = <Device>[];
+
+  static void addDevice(Device device) {
+    devices.removeWhere((d) => d.name == device.name);
+    devices.add(device);
+  }
 
   List<int?> rssis = [];
 
