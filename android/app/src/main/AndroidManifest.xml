@@ -11,6 +11,13 @@
 		<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 		<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
+    <!-- Declare that your app is available to devices running Android 12 and higher -->
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+    
+    <!-- Declare that your app requires Bluetooth -->
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+
     <application
         android:label="scanner"
         android:name="${applicationName}"

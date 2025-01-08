@@ -13,6 +13,7 @@ class ChartPage extends StatelessWidget {
     Colors.red: 'red',
     Colors.blue: 'blue',
     Colors.green: 'green',
+    Colors.purple: 'purple',
   };
 
   @override
@@ -194,8 +195,8 @@ class ChartPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10),
           child: LocMap(
-            width: 6,
-            height: 5,
+            width: 40 * 0.3,
+            height: 10 * 0.3,
             userPosition: Offset(x.toDouble(), y.toDouble()),
             devices: devices,
           ),

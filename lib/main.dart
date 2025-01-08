@@ -34,6 +34,8 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 1;
   var devices = Device.devices;
   var record = true;
+  bool arePermissionsGranted = false;
+  bool isBluetoothEnabled = false;
 
   @override
   void initState() {
@@ -48,7 +50,7 @@ class _MyAppState extends State<MyApp> {
           for (Device device in devices) {
             Beacon? beacon = result.beacons.firstWhereOrNull(
               (b) =>
-                  b.proximityUUID == device.uuid &&
+                  b.proximityUUID.toLowerCase() == device.uuid.toLowerCase() &&
                   b.major == device.major &&
                   b.minor == device.minor,
             );

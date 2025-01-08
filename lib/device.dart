@@ -7,19 +7,34 @@ import 'package:thesis_scanner/utils/rssi2meters.dart';
 
 class Device {
   final String name;
-  final String uuid;
-  final int major;
-  final int minor;
-  final int txPower;
-  final double X;
-  final double Y;
-  final double am;
+  String uuid;
+  int major;
+  int minor;
+  int txPower;
+  double X;
+  double Y;
+  double am;
 
   static final devices = <Device>[];
 
   static void addDevice(Device device) {
     devices.removeWhere((d) => d.name == device.name);
     devices.add(device);
+  }
+
+  static void addOrUpdateDevice(Device device) {
+    int index = devices.indexWhere((d) => d.name == device.name);
+    if (index != -1) {
+      devices[index].uuid = device.uuid;
+      devices[index].major = device.major;
+      devices[index].minor = device.minor;
+      devices[index].txPower = device.txPower - 15;
+      devices[index].X = device.X * 0.3;
+      devices[index].Y = device.Y * 0.3;
+      devices[index].am = device.am;
+    } else {
+      devices.add(device);
+    }
   }
 
   List<int?> rssis = [];

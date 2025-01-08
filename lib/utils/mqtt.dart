@@ -73,8 +73,7 @@ void storeDeviceData(String deviceId, String data) {
     final am = jsonData['am']?.toDouble() ?? 0.0;
 
     Device d = Device(name, uuid, major, minor, txPower, X, Y, am);
-    _log.info('Successfully created Device "${d.name}"');
-    Device.addDevice(d);
+    Device.addOrUpdateDevice(d);
   } catch (e, stackTrace) {
     _log.severe('Failed to parse JSON data: $data', e, stackTrace);
     return;

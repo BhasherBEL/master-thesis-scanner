@@ -8,6 +8,12 @@ Map<T, double> getNBiggestValues<T>(Map<T, double> map, int n) {
   return Map.fromEntries(sortedEntries.take(n));
 }
 
+Map<T, double> getNLowestValues<T>(Map<T, double> map, int n) {
+  final sortedEntries = map.entries.toList()
+    ..sort((a, b) => a.value.compareTo(b.value));
+  return Map.fromEntries(sortedEntries.take(n));
+}
+
 (num, num) localize(List<Device> devices) {
   Map<Device, double> distances = {};
 
@@ -21,7 +27,7 @@ Map<T, double> getNBiggestValues<T>(Map<T, double> map, int n) {
     return (0, 0);
   }
 
-  distances = getNBiggestValues(distances, 3);
+  distances = getNLowestValues(distances, 3);
 
   List<(num, num, num)> p =
       distances.entries.map((e) => (e.key.X, e.key.Y, e.value)).toList();
