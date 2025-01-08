@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:thesis_scanner/device.dart';
 
 Map<T, double> getNBiggestValues<T>(Map<T, double> map, int n) {
@@ -19,7 +17,13 @@ Map<T, double> getNLowestValues<T>(Map<T, double> map, int n) {
 
   for (var device in devices) {
     if (device.kalmanDistances.isNotEmpty) {
-      distances[device] = device.kalmanDistances.last.toDouble();
+      var lastTenRssis = device.rssis.length >= 10
+          ? device.rssis.sublist(device.rssis.length - 10)
+          : device.rssis;
+
+      if (lastTenRssis.any((rssi) => rssi != null)) {
+        distances[device] = device.kalmanDistances.last.toDouble();
+      }
     }
   }
 
@@ -29,29 +33,27 @@ Map<T, double> getNLowestValues<T>(Map<T, double> map, int n) {
 
   distances = getNLowestValues(distances, 3);
 
-  List<(num, num, num)> p =
+  List<(num, num, num)> apData =
       distances.entries.map((e) => (e.key.X, e.key.Y, e.value)).toList();
 
-  num a = (-2 * p[0].$1) + (2 * p[1].$1);
-  num b = (-2 * p[0].$2) + (2 * p[1].$2);
-  num c = pow(p[0].$3, 2) -
-      pow(p[1].$3, 2) -
-      pow(p[0].$1, 2) +
-      pow(p[1].$1, 2) -
-      pow(p[0].$2, 2) +
-      pow(p[1].$2, 2);
+  num centroidX = (apData[0].$1 + apData[1].$1 + apData[2].$1) / 3;
+  num centroidY = (apData[0].$2 + apData[1].$2 + apData[2].$2) / 3;
 
-  num d = (-2 * p[1].$1) + (2 * p[2].$1);
-  num e = (-2 * p[1].$2) + (2 * p[2].$2);
-  num f = pow(p[1].$3, 2) -
-      pow(p[2].$3, 2) -
-      pow(p[1].$1, 2) +
-      pow(p[2].$1, 2) -
-      pow(p[1].$2, 2) +
-      pow(p[2].$2, 2);
+  List<num> ratios = [
+    apData[1].$3 / apData[0].$3,
+    apData[2].$3 / apData[1].$3,
+    apData[0].$3 / apData[2].$3
+  ];
 
-  num x = (c * e - f * b) / (e * a - b * d);
-  num y = (c * d - a * f) / (b * d - a * e);
+  num xOffset = ((apData[0].$1 - centroidX) * ratios[0] +
+          (apData[1].$1 - centroidX) * ratios[1] +
+          (apData[2].$1 - centroidX) * ratios[2]) /
+      3;
 
-  return (x, y);
+  num yOffset = ((apData[0].$2 - centroidY) * ratios[0] +
+          (apData[1].$2 - centroidY) * ratios[1] +
+          (apData[2].$2 - centroidY) * ratios[2]) /
+      3;
+
+  return (centroidX + xOffset, centroidY + yOffset);
 }

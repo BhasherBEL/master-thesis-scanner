@@ -113,7 +113,7 @@ class Device {
       //0.25,
       1.4,
       0,
-      0, //rssis.firstWhereOrNull((r) => r != null)?.toDouble() ?? 0,
+      15, //rssis.firstWhereOrNull((r) => r != null)?.toDouble() ?? 0,
     );
     return validRssis
         .map(

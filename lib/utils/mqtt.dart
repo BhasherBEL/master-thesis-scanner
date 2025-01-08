@@ -5,14 +5,9 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:logging/logging.dart';
 import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/secrets.dart';
 
 final _log = Logger("MQTT");
-
-String mqttServer = 'kb4a359f.ala.eu-central-1.emqxsl.com';
-int mqttPort = 8883;
-String mqttClientName = 'scanner_app';
-String mqttUser = 'scanner_esp';
-String mqttPassword = '';
 
 MqttServerClient? client;
 
