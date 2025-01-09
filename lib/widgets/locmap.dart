@@ -6,6 +6,7 @@ class LocMap extends StatelessWidget {
   final double height;
   final Offset userPosition;
   final List<Device> devices;
+  final Map<Color, String> colors;
 
   const LocMap({
     super.key,
@@ -13,6 +14,7 @@ class LocMap extends StatelessWidget {
     required this.height,
     required this.userPosition,
     required this.devices,
+    required this.colors,
   });
 
   @override
@@ -25,6 +27,7 @@ class LocMap extends StatelessWidget {
           height: height,
           userPosition: userPosition,
           devices: devices,
+          colors: colors,
         ),
       ),
     );
@@ -36,12 +39,14 @@ class RoomPainter extends CustomPainter {
   final double height;
   final Offset userPosition;
   final List<Device> devices;
+  final Map<Color, String> colors;
 
   RoomPainter({
     required this.width,
     required this.height,
     required this.userPosition,
     required this.devices,
+    required this.colors,
   });
 
   @override
@@ -58,15 +63,6 @@ class RoomPainter extends CustomPainter {
     final Paint userPaint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
-
-    final Paint beaconPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-
-    final Paint beaconDistPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
 
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
@@ -86,9 +82,22 @@ class RoomPainter extends CustomPainter {
     final userScreenPosition = mapToScreen(userPosition);
     canvas.drawCircle(userScreenPosition, 10, userPaint);
 
+    int i = 0;
     for (final device in devices) {
+      if (device.name == "ESP32-2") {
+        print("${device.X} ${device.Y}");
+      }
+      final Paint beaconPaint = Paint()
+        ..color = colors.keys.elementAt(i % colors.length)
+        ..style = PaintingStyle.fill;
+
+      final Paint beaconDistPaint = Paint()
+        ..color = colors.keys.elementAt(i % colors.length)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
       final p = mapToScreen(Offset(device.X, device.Y));
-      canvas.drawCircle(p, 8, beaconPaint);
+      canvas.drawCircle(p, 5, beaconPaint);
 
       if (device.kalmanDistances.isNotEmpty) {
         final d = device.kalmanDistances.last.toDouble();
@@ -99,6 +108,7 @@ class RoomPainter extends CustomPainter {
           beaconDistPaint,
         );
       }
+      i++;
     }
   }
 

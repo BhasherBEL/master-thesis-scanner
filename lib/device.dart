@@ -23,14 +23,18 @@ class Device {
   }
 
   static void addOrUpdateDevice(Device device) {
+    device.txPower -= 15;
+    device.X *= 0.3;
+    device.Y *= 0.3;
+
     int index = devices.indexWhere((d) => d.name == device.name);
     if (index != -1) {
       devices[index].uuid = device.uuid;
       devices[index].major = device.major;
       devices[index].minor = device.minor;
-      devices[index].txPower = device.txPower - 15;
-      devices[index].X = device.X * 0.3;
-      devices[index].Y = device.Y * 0.3;
+      devices[index].txPower = device.txPower;
+      devices[index].X = device.X;
+      devices[index].Y = device.Y;
       devices[index].am = device.am;
     } else {
       devices.add(device);
@@ -109,7 +113,7 @@ class Device {
 
   List<num> get kalmanDistances {
     KalmanFilter kf = KalmanFilter(
-      0.1,
+      0.05,
       //0.25,
       1.4,
       0,

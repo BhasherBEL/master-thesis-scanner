@@ -14,6 +14,7 @@ class ChartPage extends StatelessWidget {
     Colors.blue: 'blue',
     Colors.green: 'green',
     Colors.purple: 'purple',
+    Colors.orange: 'orange',
   };
 
   @override
@@ -199,6 +200,7 @@ class ChartPage extends StatelessWidget {
             height: 10 * 0.3,
             userPosition: Offset(x.toDouble(), y.toDouble()),
             devices: devices,
+            colors: colors,
           ),
         ),
       ],
