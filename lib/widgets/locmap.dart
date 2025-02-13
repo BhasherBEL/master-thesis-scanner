@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/poi.dart';
 
 class LocMap extends StatelessWidget {
   final double width;
@@ -7,6 +10,7 @@ class LocMap extends StatelessWidget {
   final Offset userPosition;
   final List<Device> devices;
   final Map<Color, String> colors;
+  final List<POI> pois;
 
   const LocMap({
     super.key,
@@ -15,19 +19,23 @@ class LocMap extends StatelessWidget {
     required this.userPosition,
     required this.devices,
     required this.colors,
+    required this.pois,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: width / height,
-      child: CustomPaint(
-        painter: RoomPainter(
-          width: width,
-          height: height,
-          userPosition: userPosition,
-          devices: devices,
-          colors: colors,
+    return ClipRect(
+      child: AspectRatio(
+        aspectRatio: width / height,
+        child: CustomPaint(
+          painter: RoomPainter(
+            width: width,
+            height: height,
+            userPosition: userPosition,
+            devices: devices,
+            colors: colors,
+            pois: pois,
+          ),
         ),
       ),
     );
@@ -40,6 +48,7 @@ class RoomPainter extends CustomPainter {
   final Offset userPosition;
   final List<Device> devices;
   final Map<Color, String> colors;
+  final List<POI> pois;
 
   RoomPainter({
     required this.width,
@@ -47,6 +56,7 @@ class RoomPainter extends CustomPainter {
     required this.userPosition,
     required this.devices,
     required this.colors,
+    required this.pois,
   });
 
   @override
@@ -77,7 +87,7 @@ class RoomPainter extends CustomPainter {
     double scaleY = size.height / height;
 
     Offset mapToScreen(Offset point) =>
-        Offset(point.dx * scaleX, point.dy * scaleY);
+        Offset(point.dx * scaleX, size.height - (point.dy * scaleY));
 
     final userScreenPosition = mapToScreen(userPosition);
     canvas.drawCircle(userScreenPosition, 10, userPaint);
@@ -106,6 +116,52 @@ class RoomPainter extends CustomPainter {
         );
       }
       i++;
+    }
+
+    for (final poi in pois) {
+      final Paint poiPaint = Paint()
+        ..color = poi.getColor()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0;
+
+      final p = mapToScreen(Offset(poi.X, poi.Y));
+      const crossSize = 6.0;
+      const angle = 45 * 3.14159 / 180;
+
+      canvas.drawLine(
+        Offset(p.dx - crossSize * cos(angle), p.dy - crossSize * sin(angle)),
+        Offset(p.dx + crossSize * cos(angle), p.dy + crossSize * sin(angle)),
+        poiPaint,
+      );
+      canvas.drawLine(
+        Offset(p.dx - crossSize * sin(angle), p.dy + crossSize * cos(angle)),
+        Offset(p.dx + crossSize * sin(angle), p.dy - crossSize * cos(angle)),
+        poiPaint,
+      );
+
+      final Paint poiRadiusInPaint = Paint()
+        ..color = Colors.green.withOpacity(0.3)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      final Paint poiRadiusOutPaint = Paint()
+        ..color = Colors.red.withOpacity(0.3)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      final sizeIn = Size(poi.radiusIn * scaleX * 2, poi.radiusIn * scaleY * 2);
+      final sizeOut =
+          Size(poi.radiusOut * scaleX * 2, poi.radiusOut * scaleY * 2);
+
+      canvas.drawOval(
+        Offset(p.dx - sizeIn.width / 2, p.dy - sizeIn.height / 2) & sizeIn,
+        poiRadiusInPaint,
+      );
+
+      canvas.drawOval(
+        Offset(p.dx - sizeOut.width / 2, p.dy - sizeOut.height / 2) & sizeOut,
+        poiRadiusOutPaint,
+      );
     }
   }
 

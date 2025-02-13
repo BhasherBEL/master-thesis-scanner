@@ -5,6 +5,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:logging/logging.dart';
 import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/poi.dart';
 import 'package:thesis_scanner/secrets.dart';
 
 final _log = Logger("MQTT");
@@ -38,6 +39,7 @@ Future<void> mqttConnect(String udid) async {
   _log.info('Successfully connected to MQTT broker');
 
   client?.subscribe("ibeacon/devices/#", MqttQos.atLeastOnce);
+  client?.subscribe("ibeacon/poi/#", MqttQos.atLeastOnce);
 
   client?.updates?.listen(mqttListener);
 }
@@ -52,6 +54,10 @@ void mqttListener(List<MqttReceivedMessage<MqttMessage?>>? c) {
   if (topic.startsWith('ibeacon/devices/')) {
     final deviceId = topic.split('/')[2];
     storeDeviceData(deviceId, payload);
+  }
+  if (topic.startsWith('ibeacon/poi/')) {
+    final poiId = topic.split('/')[2];
+    storePoiData(poiId, payload);
   }
 }
 
@@ -70,7 +76,26 @@ void storeDeviceData(String deviceId, String data) {
     Device d = Device(name, uuid, major, minor, txPower, X, Y, am);
     Device.addOrUpdateDevice(d);
   } catch (e, stackTrace) {
-    _log.severe('Failed to parse JSON data: $data', e, stackTrace);
+    _log.severe('Failed to parse Device JSON data: $data', e, stackTrace);
+    return;
+  }
+}
+
+void storePoiData(String poiId, String data) {
+  try {
+    Map<String, dynamic> jsonData = jsonDecode(data);
+    final id = jsonData['id']?.toInt() ?? 0;
+    final X = jsonData['X']?.toDouble() ?? 0.0;
+    final Y = jsonData['Y']?.toDouble() ?? 0.0;
+    final name = jsonData['name'];
+    final radiusIn = jsonData['radius']['in']?.toDouble() ?? 0.0;
+    final radiusOut = jsonData['radius']['out']?.toDouble() ?? 0.0;
+    final color = jsonData['color'];
+
+    POI poi = POI(id, X, Y, radiusIn, radiusOut, name, color);
+    POI.addOrUpdatePOI(poi);
+  } catch (e, stackTrace) {
+    _log.severe('Failed to parse POI JSON data: $data', e, stackTrace);
     return;
   }
 }

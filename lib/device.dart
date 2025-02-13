@@ -24,8 +24,6 @@ class Device {
 
   static void addOrUpdateDevice(Device device) {
     device.txPower -= 15;
-    device.X *= 0.3;
-    device.Y *= 0.3;
 
     int index = devices.indexWhere((d) => d.name == device.name);
     if (index != -1) {

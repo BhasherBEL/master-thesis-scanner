@@ -1,13 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/poi.dart';
 import 'package:thesis_scanner/utils/localize.dart';
 import 'package:thesis_scanner/widgets/locmap.dart';
 
-class ChartPage extends StatelessWidget {
+class DebugPage extends StatelessWidget {
   final List<Device> devices;
+  final List<POI> pois;
 
-  const ChartPage({required this.devices, super.key});
+  const DebugPage({required this.devices, required this.pois, super.key});
 
   static Map<Color, String> colors = {
     Colors.red: 'red',
@@ -27,18 +29,42 @@ class ChartPage extends StatelessWidget {
       );
     }
 
-    if (devices.every((device) => device.validRssis.isEmpty)) {
+    /*if (devices.every((device) => device.validRssis.isEmpty)) {
       return const Text(
         "No data",
         textAlign: TextAlign.center,
       );
-    }
+    }*/
 
     var (x, y) = localize(devices);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text(
+            "Estimated position",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(
+            "${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)}",
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: LocMap(
+            width: 11,
+            height: 12.5,
+            userPosition: Offset(x.toDouble(), y.toDouble()),
+            devices: devices,
+            colors: colors,
+            pois: pois,
+          ),
+        ),
         const Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text(
@@ -179,29 +205,6 @@ class ChartPage extends StatelessWidget {
                     .toList(),
               ),
             ),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Text(
-            "Estimated position",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(
-            "${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)}",
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: LocMap(
-            width: 40 * 0.3,
-            height: 10 * 0.3,
-            userPosition: Offset(x.toDouble(), y.toDouble()),
-            devices: devices,
-            colors: colors,
           ),
         ),
       ],

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 import 'package:thesis_scanner/device.dart';
-import 'package:thesis_scanner/pages/chart.dart';
-import 'package:thesis_scanner/pages/list.dart';
-import 'package:thesis_scanner/pages/map.dart';
+import 'package:thesis_scanner/pages/debug.dart';
 import 'package:thesis_scanner/pages/record.dart';
+import 'package:thesis_scanner/poi.dart';
 import 'package:thesis_scanner/utils/logging.dart';
 import 'package:thesis_scanner/utils/mqtt.dart';
 
@@ -33,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _currentIndex = 1;
   var devices = Device.devices;
+  var pois = POI.pois;
   var record = true;
   bool arePermissionsGranted = false;
   bool isBluetoothEnabled = false;
@@ -73,12 +73,6 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: [
               if (_currentIndex == 0)
-                ListPage(devices: devices)
-              else if (_currentIndex == 1)
-                ChartPage(devices: devices)
-              else if (_currentIndex == 2)
-                MapPage(devices: devices)
-              else if (_currentIndex == 3)
                 RecordPage(
                   devices: devices,
                   record: record,
@@ -87,7 +81,9 @@ class _MyAppState extends State<MyApp> {
                       record = r;
                     });
                   },
-                ),
+                )
+              else if (_currentIndex == 1)
+                DebugPage(devices: devices, pois: pois),
             ],
           ),
         ),
@@ -101,20 +97,12 @@ class _MyAppState extends State<MyApp> {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.list),
-              label: 'List',
+              icon: Icon(Icons.save),
+              label: 'Experiment',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart),
-              label: 'Charts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map),
-              label: 'Map',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.save),
-              label: 'Record',
+              label: 'Debug',
             ),
           ],
         ),
