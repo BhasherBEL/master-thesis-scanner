@@ -113,7 +113,7 @@ class Device {
 
   List<num> get kalmanDistances {
     KalmanFilter kf = KalmanFilter(
-      0.05,
+      0.1,
       //0.25,
       1.4,
       0,

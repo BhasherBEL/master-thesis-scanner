@@ -84,9 +84,6 @@ class RoomPainter extends CustomPainter {
 
     int i = 0;
     for (final device in devices) {
-      if (device.name == "ESP32-2") {
-        print("${device.X} ${device.Y}");
-      }
       final Paint beaconPaint = Paint()
         ..color = colors.keys.elementAt(i % colors.length)
         ..style = PaintingStyle.fill;

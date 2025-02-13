@@ -15,6 +15,7 @@ class ChartPage extends StatelessWidget {
     Colors.green: 'green',
     Colors.purple: 'purple',
     Colors.orange: 'orange',
+    Colors.lime: 'lime',
   };
 
   @override
