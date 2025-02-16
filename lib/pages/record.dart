@@ -2,16 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/user.dart';
+import 'package:thesis_scanner/widgets/save_button.dart';
 
 class RecordPage extends StatefulWidget {
-  final List<Device> devices;
   final bool record;
   final Function(bool r) setRecord;
+  final User user;
 
   const RecordPage({
-    required this.devices,
     required this.record,
     required this.setRecord,
+    required this.user,
     super.key,
   });
 
@@ -26,7 +28,7 @@ class _RecordPageState extends State<RecordPage> {
   startRecording() {
     setState(() {
       isRecording = true;
-      for (var device in widget.devices) {
+      for (var device in widget.user.devices) {
         device.rssis.clear();
       }
 
@@ -52,6 +54,9 @@ class _RecordPageState extends State<RecordPage> {
   Widget build(BuildContext context) {
     return Column(children: [
       Center(
+        child: SaveButton(entries: widget.user.entries),
+      ),
+      Center(
         child: Column(
           children: [
             OutlinedButton(
@@ -66,7 +71,7 @@ class _RecordPageState extends State<RecordPage> {
               child: const Text('Clear system recording'),
               onPressed: () {
                 setState(() {
-                  for (var device in widget.devices) {
+                  for (var device in widget.user.devices) {
                     device.rssis.clear();
                   }
                 });
@@ -86,9 +91,9 @@ class _RecordPageState extends State<RecordPage> {
       ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: widget.devices.length,
+        itemCount: widget.user.devices.length,
         itemBuilder: (context, index) {
-          Device device = widget.devices[index];
+          Device device = widget.user.devices[index];
 
           var (rssi, n, miss, distance) =
               device.getAverageDistance(10000, 10000);
@@ -98,7 +103,7 @@ class _RecordPageState extends State<RecordPage> {
               '${device.name} - ${device.major}#${device.minor}',
             ),
             subtitle: Text(
-              '${distance?.toStringAsFixed(5)}m (${rssi.toStringAsFixed(5)}/${device.txPower})',
+              '${distance.toStringAsFixed(5)}m (${rssi.toStringAsFixed(5)}/${device.txPower})',
             ),
             trailing: Text(
               '$n/${n + miss}',

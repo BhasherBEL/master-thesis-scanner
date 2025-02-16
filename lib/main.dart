@@ -6,6 +6,7 @@ import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/pages/debug.dart';
 import 'package:thesis_scanner/pages/record.dart';
 import 'package:thesis_scanner/poi.dart';
+import 'package:thesis_scanner/user.dart';
 import 'package:thesis_scanner/utils/logging.dart';
 import 'package:thesis_scanner/utils/mqtt.dart';
 
@@ -31,8 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _currentIndex = 1;
-  var devices = Device.devices;
-  var pois = POI.pois;
+  var user = User(Device.devices, POI.pois);
   var record = true;
   bool arePermissionsGranted = false;
   bool isBluetoothEnabled = false;
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     flutterBeacon.ranging(regions).listen((RangingResult result) {
       if (record) {
         setState(() {
-          for (Device device in devices) {
+          for (Device device in user.devices) {
             Beacon? beacon = result.beacons.firstWhereOrNull(
               (b) =>
                   b.proximityUUID.toLowerCase() == device.uuid.toLowerCase() &&
@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
 
             device.addEntry(beacon?.rssi);
           }
+          user.update();
         });
       }
     });
@@ -74,16 +75,16 @@ class _MyAppState extends State<MyApp> {
             children: [
               if (_currentIndex == 0)
                 RecordPage(
-                  devices: devices,
                   record: record,
                   setRecord: (bool r) {
                     setState(() {
                       record = r;
                     });
                   },
+                  user: user,
                 )
               else if (_currentIndex == 1)
-                DebugPage(devices: devices, pois: pois),
+                DebugPage(user: user),
             ],
           ),
         ),

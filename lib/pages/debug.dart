@@ -1,15 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:thesis_scanner/device.dart';
-import 'package:thesis_scanner/poi.dart';
-import 'package:thesis_scanner/utils/localize.dart';
+import 'package:thesis_scanner/user.dart';
 import 'package:thesis_scanner/widgets/locmap.dart';
 
 class DebugPage extends StatelessWidget {
-  final List<Device> devices;
-  final List<POI> pois;
+  final User user;
 
-  const DebugPage({required this.devices, required this.pois, super.key});
+  const DebugPage({required this.user, super.key});
 
   static Map<Color, String> colors = {
     Colors.red: 'red',
@@ -22,21 +19,12 @@ class DebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (devices.isEmpty) {
+    if (user.devices.isEmpty) {
       return const Text(
         'No beacon detected',
         textAlign: TextAlign.center,
       );
     }
-
-    /*if (devices.every((device) => device.validRssis.isEmpty)) {
-      return const Text(
-        "No data",
-        textAlign: TextAlign.center,
-      );
-    }*/
-
-    var (x, y) = localize(devices);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -51,7 +39,15 @@ class DebugPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Text(
-            "${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)}",
+            "(${user.X.toStringAsFixed(2)}, ${user.Y.toStringAsFixed(2)})",
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(
+            user.currentPoi == null || user.poiDist == null
+                ? "Close to nothing"
+                : "Close to ${user.currentPoi?.name} (${user.poiDist?.toStringAsFixed(2)}m)",
           ),
         ),
         Padding(
@@ -59,10 +55,10 @@ class DebugPage extends StatelessWidget {
           child: LocMap(
             width: 11,
             height: 12.5,
-            userPosition: Offset(x.toDouble(), y.toDouble()),
-            devices: devices,
+            userPosition: Offset(user.X.toDouble(), user.Y.toDouble()),
+            devices: user.devices,
             colors: colors,
-            pois: pois,
+            pois: user.pois,
           ),
         ),
         const Padding(
@@ -77,9 +73,9 @@ class DebugPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (var index = 0; index < devices.length; index++)
+              for (var index = 0; index < user.devices.length; index++)
                 Text(
-                    '${devices[index].name}: ${colors.values.elementAt(index % colors.length)}'),
+                    '${user.devices[index].name}: ${colors.values.elementAt(index % colors.length)}'),
             ],
           ),
         ),
@@ -95,7 +91,7 @@ class DebugPage extends StatelessWidget {
           height: 300,
           child: LineChart(
             LineChartData(
-              lineBarsData: devices
+              lineBarsData: user.devices
                   .asMap()
                   .entries
                   .map(
@@ -136,7 +132,7 @@ class DebugPage extends StatelessWidget {
               LineChartData(
                 maxY: 15,
                 minY: 0,
-                lineBarsData: devices
+                lineBarsData: user.devices
                     .asMap()
                     .entries
                     .map(
@@ -179,7 +175,7 @@ class DebugPage extends StatelessWidget {
               LineChartData(
                 maxY: 15,
                 minY: 0,
-                lineBarsData: devices
+                lineBarsData: user.devices
                     .asMap()
                     .entries
                     .map(
