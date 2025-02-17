@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/experiment.dart';
 import 'package:thesis_scanner/theorical_experiment.dart';
@@ -20,6 +21,7 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
+  Timer? _timer;
   @override
   void initState() {
     super.initState();
@@ -28,8 +30,25 @@ class _RecordPageState extends State<RecordPage> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     widget.user.removeListener(_onUserChanged);
     super.dispose();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (widget.user.experiment == null) return;
+
+      if (widget.user.experiment!.currentStepDurationDecrease) {
+        if (widget.user.experiment!.currentStepRemainingDuration > 0) {
+          widget.user.experiment!.currentStepRemainingDuration--;
+        }
+      } else {
+        widget.user.experiment!.currentStepRemainingDuration++;
+      }
+      widget.user.update();
+    });
   }
 
   num nEntries = -1;
@@ -71,12 +90,50 @@ class _RecordPageState extends State<RecordPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
+          if (widget.user.experiment!.currentStep == -1)
+            const Text('Move into the starting point of the experiment')
+          else ...[
+            Text('Current step: ${widget.user.experiment!.currentStepTitle}'),
+            Text(
+              'Duration: ${widget.user.experiment!.currentStepRemainingDuration} seconds',
+            ),
+          ],
+          const SizedBox(height: 16),
+          if (widget.user.experiment!.currentStep <
+              widget.user.experiment!.theoricalExperiment.steps.length - 1)
+            ElevatedButton(
+              onPressed: () {
+                if (widget.user.experiment == null) return;
+                Experiment experiment = widget.user.experiment!;
+                experiment.currentStep++;
+                experiment.currentStepDurationDecrease = experiment
+                        .theoricalExperiment
+                        .steps[experiment.currentStep]
+                        .duration >
+                    0;
+                experiment.currentStepRemainingDuration = experiment
+                    .theoricalExperiment.steps[experiment.currentStep].duration;
+
+                _startTimer();
+
+                widget.user.update();
+              },
+              child: const Text('Next step'),
+            )
+          else
+            ElevatedButton(
+              onPressed: widget.user.endExperiment,
+              child: const Text('End experiment'),
+            ),
+          const SizedBox(height: 16),
           Text('$nEntries entries recorded'),
           ElevatedButton(
-            onPressed: widget.user.endExperiment,
-            child: const Text('End experiment'),
+            onPressed: widget.user.cancelExperiment,
+            child: const Text('Cancel experiment'),
           )
         ],
+        const SizedBox(height: 32),
+        const Text('History', style: TextStyle(fontSize: 24)),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

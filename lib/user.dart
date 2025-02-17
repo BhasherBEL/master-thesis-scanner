@@ -80,4 +80,11 @@ class User extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void cancelExperiment() {
+    if (experiment != null) {
+      experiment = null;
+      notifyListeners();
+    }
+  }
 }

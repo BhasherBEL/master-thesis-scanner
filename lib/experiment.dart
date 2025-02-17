@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/entry.dart';
 import 'package:thesis_scanner/poi.dart';
@@ -9,9 +12,9 @@ class Experiment {
   final List<Device> devices;
   final List<POI> pois;
   final List<Entry> entries = [];
-  final currentStep = 0;
-  final currentStepRemainingDuration = 0;
-  final currentStepDurationDecrease = true;
+  int currentStep = -1;
+  int currentStepRemainingDuration = 0;
+  bool currentStepDurationDecrease = true;
 
   Experiment(
     this.theoricalExperiment,
@@ -19,29 +22,44 @@ class Experiment {
     this.pois,
   );
 
+  get currentStepTitle => theoricalExperiment.steps[currentStep].title;
+
   void record(User user) {
-    final entry =
-        Entry(DateTime.now(), user.X, user.Y, user.currentPoi, user.poiDist);
+    final entry = Entry(
+      theoricalExperiment,
+      DateTime.now(),
+      user.X,
+      user.Y,
+      user.currentPoi,
+      user.poiDist,
+      currentStep,
+    );
     entries.add(entry);
   }
 
-  bool save() {
+  Future<bool> save() async {
     try {
-      // Generate the CSV content
-      const csvHeader = 'Timestamp,X,Y,POI,POI Distance\n';
+      const csvHeader = 'xp_name,xp_step,time,x,y,poi,poi_dist\n';
       final csvRows = entries
           .map((entry) =>
-              '${entry.time.toIso8601String()},${entry.X},${entry.Y},${entry.poi?.name ?? ""},${entry.poiDist ?? ""}')
+              '${entry.theoricalExperiment.name},${entry.step},${entry.time.toIso8601String()},${entry.X},${entry.Y},${entry.poi?.name ?? ""},${entry.poiDist ?? ""}')
           .join('\n');
       final csvContent = csvHeader + csvRows;
 
-      // Get temporary directory to store the file temporarily
-      // Note: We don't delete the temp file immediately as it's needed for sharing
-      // The system will clean up temporary files automatically
+      final directory = await getDownloadsDirectory();
+      if (directory == null) {
+        print('Error getting downloads directory');
+        return false;
+      }
+      final path = '${directory.path}/experiment_data.csv';
 
+      final file = File(path);
+      await file.writeAsString(csvContent);
+
+      print('CSV saved to: $path');
       return true;
     } catch (e) {
-      print('Error sharing CSV: $e');
+      print('Error saving CSV: $e');
       return false;
     }
   }
