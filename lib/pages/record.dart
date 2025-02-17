@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/experiment.dart';
+import 'package:thesis_scanner/theorical_experiment.dart';
 import 'package:thesis_scanner/user.dart';
-import 'package:thesis_scanner/widgets/save_button.dart';
 
 class RecordPage extends StatefulWidget {
   final bool record;
@@ -22,95 +20,78 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
-  bool isRecording = false;
-  int timeRemaining = 30;
+  @override
+  void initState() {
+    super.initState();
+    widget.user.addListener(_onUserChanged);
+  }
 
-  startRecording() {
+  @override
+  void dispose() {
+    widget.user.removeListener(_onUserChanged);
+    super.dispose();
+  }
+
+  num nEntries = -1;
+
+  void _onUserChanged() {
     setState(() {
-      isRecording = true;
-      for (var device in widget.user.devices) {
-        device.rssis.clear();
-      }
-
-      widget.setRecord(true);
-
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          timeRemaining--;
-        });
-        if (timeRemaining <= 0) {
-          timer.cancel();
-          setState(() {
-            isRecording = false;
-            timeRemaining = 30;
-            widget.setRecord(false);
-          });
-        }
-      });
+      nEntries = widget.user.experiment?.entries.length ?? -1;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Center(
-        child: SaveButton(entries: widget.user.entries),
-      ),
-      Center(
-        child: Column(
-          children: [
-            OutlinedButton(
-              child: Text(
-                widget.record
-                    ? 'Stop system recording'
-                    : 'Start system recording',
-              ),
-              onPressed: () => widget.setRecord(!widget.record),
-            ),
-            OutlinedButton(
-              child: const Text('Clear system recording'),
-              onPressed: () {
-                setState(() {
-                  for (var device in widget.user.devices) {
-                    device.rssis.clear();
-                  }
-                });
-              },
-            ),
-            OutlinedButton(
-              onPressed: isRecording ? null : startRecording,
-              child: const Text('Start timed recording'),
-            ),
-            Text(
-              'Recording state: ${widget.record ? 'enabled' : 'disabled'}',
-            ),
-            Text('Time remaining: $timeRemaining'),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.user.experiment == null) ...[
+          Text(
+            'Select an experiment to start',
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: TheoricalExperiment.theoricalExperiments
+                .map(
+                    (TheoricalExperiment theoricalExperiment) => ElevatedButton(
+                          child: Text(theoricalExperiment.name),
+                          onPressed: () =>
+                              widget.user.startExperiment(theoricalExperiment),
+                        ))
+                .toList(),
+          )
+        ] else ...[
+          Text(
+            '${widget.user.experiment!.theoricalExperiment.name} in progress',
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Text('$nEntries entries recorded'),
+          ElevatedButton(
+            onPressed: widget.user.endExperiment,
+            child: const Text('End experiment'),
+          )
+        ],
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: widget.user.experiments.length,
+          itemBuilder: (context, index) {
+            Experiment experiment = widget.user.experiments.elementAt(index);
+            return ListTile(
+              title: Text(experiment.theoricalExperiment.name),
+              subtitle: Text('${experiment.entries.length} entries'),
+              onTap: experiment.save,
+              trailing: const Icon(Icons.save),
+            );
+          },
         ),
-      ),
-      ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: widget.user.devices.length,
-        itemBuilder: (context, index) {
-          Device device = widget.user.devices[index];
-
-          var (rssi, n, miss, distance) =
-              device.getAverageDistance(10000, 10000);
-
-          return ListTile(
-            title: Text(
-              '${device.name} - ${device.major}#${device.minor}',
-            ),
-            subtitle: Text(
-              '${distance.toStringAsFixed(5)}m (${rssi.toStringAsFixed(5)}/${device.txPower})',
-            ),
-            trailing: Text(
-              '$n/${n + miss}',
-            ),
-          );
-        },
-      ),
-    ]);
+      ],
+    );
   }
 }

@@ -71,10 +71,8 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Thesis scanner'),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              if (_currentIndex == 0)
-                RecordPage(
+          child: _currentIndex == 0
+              ? RecordPage(
                   record: record,
                   setRecord: (bool r) {
                     setState(() {
@@ -83,10 +81,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   user: user,
                 )
-              else if (_currentIndex == 1)
-                DebugPage(user: user),
-            ],
-          ),
+              : DebugPage(user: user),
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

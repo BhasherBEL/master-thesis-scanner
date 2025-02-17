@@ -1,16 +1,21 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/entry.dart';
+import 'package:thesis_scanner/experiment.dart';
 import 'package:thesis_scanner/poi.dart';
+import 'package:thesis_scanner/theorical_experiment.dart';
 import 'package:thesis_scanner/utils/localize.dart';
 
-class User {
+class User extends ChangeNotifier {
   final List<Device> devices;
   final List<POI> pois;
   num X = 0;
   num Y = 0;
   final List<Entry> entries = [];
+  final List<Experiment> experiments = [];
+  Experiment? experiment;
 
   POI? currentPoi;
   num? poiDist;
@@ -24,7 +29,10 @@ class User {
   void update() {
     updateLocation();
     updatePoi();
-    record();
+    if (experiment != null) {
+      experiment?.record(this);
+      notifyListeners();
+    }
   }
 
   void updateLocation() {
@@ -57,9 +65,19 @@ class User {
     }
   }
 
-  void record() {
-    final entry = Entry(DateTime.now(), X, Y, currentPoi, poiDist);
-    entries.add(entry);
-    // print('${currentPoi?.name}: $poiCount, $poiDist');
+  void startExperiment(TheoricalExperiment theoricalExperiment) {
+    entries.clear();
+    experiment = Experiment(theoricalExperiment, devices, pois);
+    print('Experiment started: ${theoricalExperiment.name}');
+    notifyListeners();
+  }
+
+  void endExperiment() {
+    if (experiment != null) {
+      experiments.add(experiment!);
+      print('Experiment ended: ${experiment!.theoricalExperiment.name}');
+      experiment = null;
+      notifyListeners();
+    }
   }
 }
