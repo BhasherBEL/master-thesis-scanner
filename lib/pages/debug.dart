@@ -53,8 +53,8 @@ class DebugPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10),
           child: LocMap(
-            width: 11,
-            height: 12.5,
+            width: 11.913,
+            height: 11.9,
             userPosition: Offset(user.X.toDouble(), user.Y.toDouble()),
             devices: user.devices,
             colors: colors,

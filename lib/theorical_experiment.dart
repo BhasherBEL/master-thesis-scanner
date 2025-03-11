@@ -18,18 +18,21 @@ class TheoricalExperiment {
       Step('Walking into P0I-1', 0),
       Step('Waiting on L1', 60),
       Step('Walking out of POI-1', 0),
+      Step('Waiting on L2', 60),
     ]),
     TheoricalExperiment('Experiment 2 - Impact of Beacon Density', [
       Step('Waiting on L2', 60),
       Step('Walking into P0I-1', 0),
       Step('Waiting on L1', 60),
       Step('Walking out of POI-1', 0),
+      Step('Waiting on L2', 60),
     ]),
     TheoricalExperiment('Experiment 3 - Effect of Smartphone Models', [
       Step('Waiting on L2', 60),
       Step('Walking into P0I-1', 0),
       Step('Waiting on L1', 60),
       Step('Walking out of POI-1', 0),
+      Step('Waiting on L2', 60),
     ]),
   ];
 }

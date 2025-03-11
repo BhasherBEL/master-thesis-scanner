@@ -3,3 +3,7 @@ all:
 
 build:
 	flutter build apk
+
+adb:
+	sudo adb kill-server
+	sudo adb start-server
