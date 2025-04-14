@@ -23,8 +23,7 @@ class Device {
   }
 
   static void addOrUpdateDevice(Device device) {
-    //device.txPower -= 10;
-    device.txPower -= 5;
+    device.txPower = -69;
 
     int index = devices.indexWhere((d) => d.name == device.name);
     if (index != -1) {
