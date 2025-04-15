@@ -1,7 +1,7 @@
 all:
 	flutter run
 
-build:
+apk:
 	flutter build apk
 
 adb:

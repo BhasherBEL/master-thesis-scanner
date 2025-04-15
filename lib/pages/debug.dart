@@ -20,10 +20,7 @@ class DebugPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (user.devices.isEmpty) {
-      return const Text(
-        'No beacon detected',
-        textAlign: TextAlign.center,
-      );
+      return const Text('No beacon detected', textAlign: TextAlign.center);
     }
 
     return Column(
@@ -53,8 +50,8 @@ class DebugPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10),
           child: LocMap(
-            width: 11.913,
-            height: 11.9,
+            width: 35.417,
+            height: 9.812,
             userPosition: Offset(user.X.toDouble(), user.Y.toDouble()),
             devices: user.devices,
             colors: colors,
@@ -75,7 +72,8 @@ class DebugPage extends StatelessWidget {
             children: [
               for (var index = 0; index < user.devices.length; index++)
                 Text(
-                    '${user.devices[index].name}: ${colors.values.elementAt(index % colors.length)}'),
+                  '${user.devices[index].name}: ${colors.values.elementAt(index % colors.length)}',
+                ),
             ],
           ),
         ),
@@ -91,29 +89,31 @@ class DebugPage extends StatelessWidget {
           height: 300,
           child: LineChart(
             LineChartData(
-              lineBarsData: user.devices
-                  .asMap()
-                  .entries
-                  .map(
-                    (d) => LineChartBarData(
-                      color: colors.keys.elementAt(d.key % colors.length),
-                      spots: d.value.validRssis.reversed
-                          .take(20)
-                          .toList()
-                          .reversed
-                          .toList()
-                          .asMap()
-                          .entries
-                          .map(
-                            (e) => FlSpot(
-                              e.key.toDouble(),
-                              e.value.toDouble(),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  )
-                  .toList(),
+              lineBarsData:
+                  user.devices
+                      .asMap()
+                      .entries
+                      .map(
+                        (d) => LineChartBarData(
+                          color: colors.keys.elementAt(d.key % colors.length),
+                          spots:
+                              d.value.validRssis.reversed
+                                  .take(20)
+                                  .toList()
+                                  .reversed
+                                  .toList()
+                                  .asMap()
+                                  .entries
+                                  .map(
+                                    (e) => FlSpot(
+                                      e.key.toDouble(),
+                                      e.value.toDouble(),
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
+                      )
+                      .toList(),
             ),
           ),
         ),
@@ -132,30 +132,32 @@ class DebugPage extends StatelessWidget {
               LineChartData(
                 maxY: 15,
                 minY: 0,
-                lineBarsData: user.devices
-                    .asMap()
-                    .entries
-                    .map(
-                      (d) => LineChartBarData(
-                        color: colors.keys.elementAt(d.key % colors.length),
-                        preventCurveOverShooting: true,
-                        spots: d.value.distances.reversed
-                            .take(20)
-                            .toList()
-                            .reversed
-                            .toList()
-                            .asMap()
-                            .entries
-                            .map(
-                              (e) => FlSpot(
-                                e.key.toDouble(),
-                                e.value.toDouble(),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                    .toList(),
+                lineBarsData:
+                    user.devices
+                        .asMap()
+                        .entries
+                        .map(
+                          (d) => LineChartBarData(
+                            color: colors.keys.elementAt(d.key % colors.length),
+                            preventCurveOverShooting: true,
+                            spots:
+                                d.value.distances.reversed
+                                    .take(20)
+                                    .toList()
+                                    .reversed
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map(
+                                      (e) => FlSpot(
+                                        e.key.toDouble(),
+                                        e.value.toDouble(),
+                                      ),
+                                    )
+                                    .toList(),
+                          ),
+                        )
+                        .toList(),
               ),
             ),
           ),
@@ -175,30 +177,32 @@ class DebugPage extends StatelessWidget {
               LineChartData(
                 maxY: 15,
                 minY: 0,
-                lineBarsData: user.devices
-                    .asMap()
-                    .entries
-                    .map(
-                      (d) => LineChartBarData(
-                        color: colors.keys.elementAt(d.key % colors.length),
-                        preventCurveOverShooting: true,
-                        spots: d.value.kalmanDistances.reversed
-                            .take(20)
-                            .toList()
-                            .reversed
-                            .toList()
-                            .asMap()
-                            .entries
-                            .map(
-                              (e) => FlSpot(
-                                e.key.toDouble(),
-                                e.value.toDouble(),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                    .toList(),
+                lineBarsData:
+                    user.devices
+                        .asMap()
+                        .entries
+                        .map(
+                          (d) => LineChartBarData(
+                            color: colors.keys.elementAt(d.key % colors.length),
+                            preventCurveOverShooting: true,
+                            spots:
+                                d.value.kalmanDistances.reversed
+                                    .take(20)
+                                    .toList()
+                                    .reversed
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map(
+                                      (e) => FlSpot(
+                                        e.key.toDouble(),
+                                        e.value.toDouble(),
+                                      ),
+                                    )
+                                    .toList(),
+                          ),
+                        )
+                        .toList(),
               ),
             ),
           ),

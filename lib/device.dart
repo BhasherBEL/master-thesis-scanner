@@ -23,8 +23,6 @@ class Device {
   }
 
   static void addOrUpdateDevice(Device device) {
-    device.txPower = -69;
-
     int index = devices.indexWhere((d) => d.name == device.name);
     if (index != -1) {
       devices[index].uuid = device.uuid;
@@ -86,8 +84,10 @@ class Device {
 
     double avgRssi = nRssis.reduce((a, b) => a + b) / realN;
 
-    double avgDistance =
-        BeaconUtil.instance.calculateDistance(txPower, avgRssi);
+    double avgDistance = BeaconUtil.instance.calculateDistance(
+      txPower,
+      avgRssi,
+    );
 
     return (avgRssi, realN, miss, avgDistance);
   }
@@ -102,31 +102,21 @@ class Device {
   }
 
   List<num> get distances {
-    return validRssis
-        .map(
-          (rssi) => rssi2meters(rssi, txPower),
-        )
-        .toList();
+    return validRssis.map((rssi) => rssi2meters(rssi, txPower)).toList();
   }
 
   List<num> get kalmanDistances {
     KalmanFilter kf = KalmanFilter(
       0.1,
       //0.25,
-      1.4,
+      3.5,
       0,
       15, //rssis.firstWhereOrNull((r) => r != null)?.toDouble() ?? 0,
     );
     return validRssis
         .map(
           (rssi) => kf.getFilteredValue(
-            min(
-              20,
-              rssi2meters(
-                rssi,
-                txPower,
-              ).toDouble(),
-            ),
+            min(20, rssi2meters(rssi, txPower).toDouble()),
           ),
         )
         .toList();
