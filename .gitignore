@@ -57,3 +57,5 @@ build
 .envrc
 
 lib/secrets.dart
+
+assets/ciel.m4a

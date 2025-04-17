@@ -1,18 +1,16 @@
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:thesis_scanner/consts.dart';
 
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/pages/debug.dart';
+import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/record.dart';
 import 'package:thesis_scanner/poi.dart';
 import 'package:thesis_scanner/user.dart';
 import 'package:thesis_scanner/utils/logging.dart';
 import 'package:thesis_scanner/utils/mqtt.dart';
-
-final regions = <Region>[
-  Region(identifier: 'Thesis'),
-];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +29,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _currentIndex = 1;
-  var user = User(Device.devices, POI.pois);
   var record = true;
   bool arePermissionsGranted = false;
   bool isBluetoothEnabled = false;
@@ -66,42 +62,59 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Thesis scanner'),
-        ),
-        body: SingleChildScrollView(
-          child: _currentIndex == 0
-              ? RecordPage(
-                  record: record,
-                  setRecord: (bool r) {
-                    setState(() {
-                      record = r;
-                    });
-                  },
-                  user: user,
-                )
-              : DebugPage(user: user),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.save),
-              label: 'Experiment',
+      home: Builder(
+        builder:
+            (context) => Scaffold(
+              appBar: AppBar(
+                title: const Text('Smart visit of Musée L'),
+                actions: <Widget>[
+                  PopupMenuButton<String>(
+                    onSelected: (String value) {
+                      setState(() {
+                        switch (value) {
+                          case 'debug':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DebugPage(),
+                              ),
+                            );
+                            break;
+                          case 'experiment':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => RecordPage(
+                                      record: record,
+                                      setRecord: (bool r) {
+                                        setState(() {
+                                          record = r;
+                                        });
+                                      },
+                                      user: user,
+                                    ),
+                              ),
+                            );
+                            break;
+                          default:
+                            break;
+                        }
+                      });
+                    },
+                    itemBuilder:
+                        (context) => const [
+                          PopupMenuItem(
+                            value: 'experiment',
+                            child: Text('Experiment'),
+                          ),
+                          PopupMenuItem(value: 'debug', child: Text('Debug')),
+                        ],
+                  ),
+                ],
+              ),
+              body: const ListPage(),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
-              label: 'Debug',
-            ),
-          ],
-        ),
       ),
     );
   }

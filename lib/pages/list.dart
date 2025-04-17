@@ -1,41 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:thesis_scanner/device.dart';
+import 'package:thesis_scanner/art.dart';
+import 'package:thesis_scanner/arts.dart';
+import 'package:thesis_scanner/pages/section.dart';
+import 'package:thesis_scanner/utils/colors.dart';
 
-class ListPage extends StatelessWidget {
-  final List<Device> devices;
+class ListPage extends StatefulWidget {
+  const ListPage({super.key});
 
-  const ListPage({required this.devices, super.key});
+  @override
+  State<ListPage> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  int currentSection = 0;
 
   @override
   Widget build(BuildContext context) {
-    if (devices.isEmpty) {
-      return const Text(
-        'No beacon detected',
-        textAlign: TextAlign.center,
-      );
-    }
+    final floor = floor6;
 
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: devices.length,
-      itemBuilder: (context, index) {
-        Device device = devices[index];
+    return Column(
+      children: [
+        ListTile(
+          title: Text(floor.title),
+          tileColor: primaryColor,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          dense: true,
+        ),
+        ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: floor.sections.length,
+          itemBuilder: (context, index) {
+            final ArtSection section = floor.sections[index];
 
-        var (rssi, n, miss, distance) = device.getAverageDistance();
-
-        return ListTile(
-          title: Text(
-            '${device.name} - ${device.major}#${device.minor}',
-          ),
-          subtitle: Text(
-            '${distance.toStringAsFixed(2)}m (${rssi.toStringAsFixed(2)}/${device.txPower})',
-          ),
-          trailing: Text(
-            '$n/${n + miss}',
-          ),
-        );
-      },
+            return Column(
+              children: [
+                ListTile(
+                  title: Text(section.title),
+                  trailing:
+                      currentSection == index
+                          ? const Icon(Icons.my_location)
+                          : null,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                SectionPage(floor: floor, section: section),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }
