@@ -1,16 +1,32 @@
 class ArtFloor {
   final String title;
+  final double x0;
+  final double y0;
+  final double x1;
+  final double y1;
   final List<ArtSection> sections;
 
-  ArtFloor(this.title, this.sections);
+  ArtFloor(this.title, this.x0, this.y0, this.x1, this.y1, this.sections);
 }
 
 class ArtSection {
   final String title;
   final String? audioUrl;
+  final double x0;
+  final double y0;
+  final double x1;
+  final double y1;
   final List<ArtPiece> pieces;
 
-  ArtSection(this.title, this.audioUrl, this.pieces);
+  ArtSection(
+    this.title,
+    this.audioUrl,
+    this.x0,
+    this.y0,
+    this.x1,
+    this.y1,
+    this.pieces,
+  );
 }
 
 class ArtPiece {
@@ -22,6 +38,8 @@ class ArtPiece {
   final String country;
   final String link;
   final String? audioUrl;
+  final double x;
+  final double y;
 
   ArtPiece(
     this.title,
@@ -32,6 +50,8 @@ class ArtPiece {
     this.country,
     this.link,
     this.audioUrl,
+    this.x,
+    this.y,
   );
 }
 

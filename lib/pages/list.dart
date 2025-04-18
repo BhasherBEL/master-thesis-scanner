@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/arts.dart';
 import 'package:thesis_scanner/pages/section.dart';
+import 'package:thesis_scanner/widgets/floormap.dart';
 import 'package:thesis_scanner/utils/colors.dart';
 
 class ListPage extends StatefulWidget {
@@ -26,36 +27,56 @@ class _ListPageState extends State<ListPage> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           dense: true,
         ),
-        ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: floor.sections.length,
-          itemBuilder: (context, index) {
-            final ArtSection section = floor.sections[index];
-
-            return Column(
-              children: [
-                ListTile(
-                  title: Text(section.title),
-                  trailing:
-                      currentSection == index
-                          ? const Icon(Icons.my_location)
-                          : null,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                SectionPage(floor: floor, section: section),
-                      ),
-                    );
-                  },
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloorMap(
+            floor: floor,
+            onSectionTap: (section) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => SectionPage(floor: floor, section: section),
                 ),
-                const Divider(),
-              ],
-            );
-          },
+              );
+            },
+            onPieceTap: (piece) {
+              // Optionally, you can navigate to a PiecePage here if you want
+            },
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: floor.sections.length,
+            itemBuilder: (context, index) {
+              final ArtSection section = floor.sections[index];
+
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text(section.title),
+                    trailing:
+                        currentSection == index
+                            ? const Icon(Icons.my_location)
+                            : null,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  SectionPage(floor: floor, section: section),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(),
+                ],
+              );
+            },
+          ),
         ),
       ],
     );
