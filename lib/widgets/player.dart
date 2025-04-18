@@ -20,16 +20,19 @@ class _AudioBarState extends State<AudioBar> {
     super.initState();
     player = AudioPlayer();
     player.onDurationChanged.listen((d) {
+      if (!mounted) return;
       setState(() {
         duration = d;
       });
     });
     player.onPositionChanged.listen((p) {
+      if (!mounted) return;
       setState(() {
         position = p;
       });
     });
     player.onPlayerStateChanged.listen((state) {
+      if (!mounted) return;
       setState(() {
         isPlaying = state == PlayerState.playing;
       });

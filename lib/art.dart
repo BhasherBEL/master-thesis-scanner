@@ -37,6 +37,7 @@ class ArtPiece {
   final List<String> categories;
   final String country;
   final String link;
+  final String? image;
   final String? audioUrl;
   final double x;
   final double y;
@@ -49,6 +50,7 @@ class ArtPiece {
     this.categories,
     this.country,
     this.link,
+    this.image,
     this.audioUrl,
     this.x,
     this.y,

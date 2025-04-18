@@ -16,6 +16,7 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       ["Tableau", "Arts plastiqes", "Peinture"],
       "Pays-Bas",
       "https://collections-museel.s-museum.be/document/le-paradis-terrestre-tableau/6089486240170b4a0c93a457",
+      "assets/pieces/le-paradis-terrestre.jpg",
       "ciel.m4a",
       2,
       5,

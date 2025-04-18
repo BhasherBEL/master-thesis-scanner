@@ -18,6 +18,7 @@ class _SmallPlayerState extends State<SmallPlayer> {
     super.initState();
     _player = AudioPlayer();
     _player.onPlayerStateChanged.listen((state) {
+      if (!mounted) return;
       setState(() {
         _isPlaying = state == PlayerState.playing;
       });

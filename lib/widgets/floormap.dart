@@ -3,12 +3,14 @@ import 'package:thesis_scanner/art.dart';
 
 class FloorMap extends StatelessWidget {
   final ArtFloor floor;
+  final ArtSection? currentSection;
   final void Function(ArtSection)? onSectionTap;
   final void Function(ArtPiece)? onPieceTap;
 
   const FloorMap({
     super.key,
     required this.floor,
+    this.currentSection,
     this.onSectionTap,
     this.onPieceTap,
   });
@@ -37,6 +39,7 @@ class FloorMap extends StatelessWidget {
                 final y1 = mapY(section.y1);
                 final top = y1 < y0 ? y1 : y0;
                 final height = (y1 - y0).abs();
+                final bool isCurrent = currentSection == section;
                 return Positioned(
                   left: left,
                   top: top,
@@ -49,17 +52,25 @@ class FloorMap extends StatelessWidget {
                             : null,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.15),
-                        border: Border.all(color: Colors.blue, width: 1),
+                        color:
+                            isCurrent
+                                ? Colors.green.withOpacity(0.18)
+                                : Colors.blue.withOpacity(0.15),
+                        border: Border.all(
+                          color: isCurrent ? Colors.green : Colors.blue,
+                          width: isCurrent ? 2 : 1,
+                        ),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Center(
                         child: Text(
                           section.title,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Colors.blue,
+                            color: isCurrent ? Colors.green : Colors.blue,
+                            fontWeight:
+                                isCurrent ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -98,6 +109,31 @@ class FloorMap extends StatelessWidget {
                   ),
                 );
               }),
+
+              if (currentSection != null)
+                Positioned(
+                  left:
+                      mapX((currentSection!.x0 + currentSection!.x1) / 2) - 12,
+                  top: mapY((currentSection!.y0 + currentSection!.y1) / 2) - 12,
+                  width: 24,
+                  height: 24,
+                  child: IgnorePointer(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.person_pin_circle,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           );
         },
