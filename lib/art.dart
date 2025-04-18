@@ -27,10 +27,21 @@ class ArtSection {
     this.y1,
     this.pieces,
   );
+
+  /// Returns the first available image from the section's pieces, or null if none.
+  String? get firstImage {
+    for (final piece in pieces) {
+      if (piece.image != null && piece.image!.isNotEmpty) {
+        return piece.image;
+      }
+    }
+    return null;
+  }
 }
 
 class ArtPiece {
   final String title;
+  final String description;
   final ArtCollection collection;
   final String date;
   final String author;
@@ -44,6 +55,7 @@ class ArtPiece {
 
   ArtPiece(
     this.title,
+    this.description,
     this.collection,
     this.date,
     this.author,

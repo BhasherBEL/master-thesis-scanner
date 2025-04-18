@@ -15,7 +15,7 @@ class NearMeList extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        itemCount: pieces.length > 4 ? 4 : pieces.length,
+        itemCount: pieces.length > 10 ? 10 : pieces.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final piece = pieces[index];
@@ -85,16 +85,19 @@ class NearMeList extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    piece.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Color(0xFF22223B),
+                                  Expanded(
+                                    child: Text(
+                                      piece.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Color(0xFF22223B),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                  SizedBox(width: 8),
                                   Text(
                                     piece.date,
                                     style: const TextStyle(
@@ -110,8 +113,8 @@ class NearMeList extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Row(
-                                    children: [
+                                  Row(
+                                    children: const [
                                       Icon(
                                         Icons.directions_walk,
                                         size: 13,
@@ -130,7 +133,6 @@ class NearMeList extends StatelessWidget {
                                   TextButton(
                                     onPressed: () => onPieceTap(piece),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: Colors.white,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 8,
                                         vertical: 0,

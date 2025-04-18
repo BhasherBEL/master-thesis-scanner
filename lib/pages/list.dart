@@ -94,7 +94,6 @@ class ListPage extends StatelessWidget {
               ),
             ),
           ),
-
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -155,7 +154,10 @@ class ListPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 NearMeList(
-                  pieces: currentSection!.pieces,
+                  pieces:
+                      floor.sections
+                          .expand((section) => section.pieces)
+                          .toList(),
                   onPieceTap: (piece) {
                     Navigator.push(
                       context,
