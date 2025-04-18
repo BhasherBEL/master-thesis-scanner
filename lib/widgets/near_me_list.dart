@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:thesis_scanner/art.dart';
 
 class NearMeList extends StatelessWidget {
   final List<ArtPiece> pieces;
+  final void Function(ArtPiece) onPieceTap;
 
-  const NearMeList({super.key, required this.pieces});
+  const NearMeList({super.key, required this.pieces, required this.onPieceTap});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 130,
+      height: 260,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -18,64 +20,144 @@ class NearMeList extends StatelessWidget {
         itemBuilder: (context, index) {
           final piece = pieces[index];
           return Container(
-            width: 100,
+            width: 225,
+            height: 400,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
               border: Border.all(color: Colors.grey[300]!),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Stack(
+                children: [
+                  Positioned.fill(
                     child:
                         (piece.image == null || piece.image!.isEmpty)
                             ? Container(
                               color: Colors.grey[300],
-                              child: const Icon(Icons.image, size: 40),
+                              child: const Icon(Icons.image, size: 160),
                             )
                             : (piece.image!.startsWith('http'))
                             ? Image.network(
                               piece.image!,
                               fit: BoxFit.cover,
                               width: double.infinity,
+                              height: double.infinity,
                               errorBuilder:
                                   (context, error, stackTrace) => Container(
                                     color: Colors.grey[300],
-                                    child: const Icon(Icons.image, size: 40),
+                                    child: const Icon(Icons.image, size: 80),
                                   ),
                             )
                             : Image.asset(
                               piece.image!,
                               fit: BoxFit.cover,
                               width: double.infinity,
+                              height: double.infinity,
                               errorBuilder:
                                   (context, error, stackTrace) => Container(
                                     color: Colors.red[300],
-                                    child: const Icon(Icons.image, size: 40),
+                                    child: const Icon(Icons.image, size: 160),
                                   ),
                             ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    piece.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                      color: Color(0xFF22223B),
+                  Positioned(
+                    top: 180,
+                    left: 6,
+                    right: 6,
+                    bottom: 6,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: Container(
+                          color: Colors.white.withOpacity(0.5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    piece.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Color(0xFF22223B),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    piece.date,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF22223B),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.directions_walk,
+                                        size: 13,
+                                        color: Color(0xFF22223B),
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        '20 Steps away',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF22223B),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () => onPieceTap(piece),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 0,
+                                      ),
+                                      minimumSize: const Size(0, 0),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: const Text(
+                                      'Detail',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF22223B),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

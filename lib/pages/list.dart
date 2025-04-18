@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/arts.dart';
+import 'package:thesis_scanner/pages/piece.dart';
 import 'package:thesis_scanner/pages/section.dart';
 import 'package:thesis_scanner/widgets/floormap.dart';
 import 'package:thesis_scanner/widgets/near_me_list.dart';
@@ -153,7 +154,28 @@ class ListPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                NearMeList(pieces: currentSection!.pieces),
+                NearMeList(
+                  pieces: currentSection!.pieces,
+                  onPieceTap: (piece) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => PiecePage(
+                              piece: piece,
+                              getFlag: (country) {
+                                switch (country) {
+                                  case "Pays-Bas":
+                                    return "🇳🇱";
+                                  default:
+                                    return "❓";
+                                }
+                              },
+                            ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 18),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24),
