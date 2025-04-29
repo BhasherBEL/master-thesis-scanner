@@ -7,8 +7,8 @@ plugins {
 
 android {
     namespace = "com.example.scanner"
-    // compileSdk = flutter.compileSdkVersion
-    compileSdk = 35
+    compileSdk = flutter.compileSdkVersion
+    // compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
