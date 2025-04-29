@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:thesis_scanner/art.dart';
+import 'package:thesis_scanner/consts.dart';
 
 class NearMeList extends StatelessWidget {
   final List<ArtPiece> pieces;
+  final ArtSection currentSection;
   final void Function(ArtPiece) onPieceTap;
 
-  const NearMeList({super.key, required this.pieces, required this.onPieceTap});
+  const NearMeList({
+    super.key,
+    required this.currentSection,
+    required this.pieces,
+    required this.onPieceTap,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final currentSectionPieces =
+        pieces.where((p) => currentSection.pieces.contains(p)).toList();
+    final otherPieces =
+        pieces.where((p) => !currentSection.pieces.contains(p)).toList();
+
+    currentSectionPieces.sort(
+      (a, b) =>
+          user.getDistance(a.x, a.y).compareTo(user.getDistance(b.x, b.y)),
+    );
+    otherPieces.sort(
+      (a, b) =>
+          user.getDistance(a.x, a.y).compareTo(user.getDistance(b.x, b.y)),
+    );
+
+    final sortedPieces = [...currentSectionPieces, ...otherPieces];
     return SizedBox(
       height: 260,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        itemCount: pieces.length > 10 ? 10 : pieces.length,
+        itemCount: sortedPieces.length > 10 ? 10 : sortedPieces.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
-          final piece = pieces[index];
+          final piece = sortedPieces[index];
           return Container(
             width: 225,
             height: 400,
@@ -97,7 +119,7 @@ class NearMeList extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  SizedBox(width: 8),
+                                  const SizedBox(width: 8),
                                   Text(
                                     piece.date,
                                     style: const TextStyle(
@@ -114,16 +136,16 @@ class NearMeList extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
-                                    children: const [
-                                      Icon(
+                                    children: [
+                                      const Icon(
                                         Icons.directions_walk,
                                         size: 13,
                                         color: Color(0xFF22223B),
                                       ),
-                                      SizedBox(width: 4),
+                                      const SizedBox(width: 4),
                                       Text(
-                                        '20 Steps away',
-                                        style: TextStyle(
+                                        '${user.getRoundedDistance(piece.x, piece.y)} Steps away',
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF22223B),
                                         ),

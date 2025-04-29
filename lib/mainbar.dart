@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:thesis_scanner/pages/debug.dart';
+import 'package:thesis_scanner/pages/record.dart';
 
 class MainBar extends StatelessWidget {
 	const MainBar({super.key});
@@ -15,7 +17,7 @@ class MainBar extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DebugPage(user: user),
+                          builder: (context) => const DebugPage(),
                         ),
                       );
                       break;

@@ -3,7 +3,6 @@ import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/pages/piece.dart';
 import 'package:thesis_scanner/utils/colors.dart';
 import 'package:thesis_scanner/widgets/player.dart';
-import 'package:thesis_scanner/widgets/small_player.dart';
 
 class SectionPage extends StatelessWidget {
   final ArtFloor floor;
@@ -87,10 +86,7 @@ class SectionPage extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        if (hasSectionAudio) ...[
-                          const SizedBox(height: 12),
-                          AudioBar(audioAsset: section.audioUrl!),
-                        ],
+                        if (hasSectionAudio) ...[const SizedBox(height: 12)],
                       ],
                     ),
                   ),
@@ -98,6 +94,7 @@ class SectionPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            AudioBar(audioAsset: section.audioUrl!),
 
             Expanded(
               child:
@@ -262,16 +259,16 @@ class SectionPage extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        if (piece.audioUrl != null &&
-                                            piece.audioUrl!.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 8.0,
-                                            ),
-                                            child: SmallPlayer(
-                                              audioAsset: piece.audioUrl!,
-                                            ),
-                                          ),
+                                        // if (piece.audioUrl != null &&
+                                        //     piece.audioUrl!.isNotEmpty)
+                                        //   Padding(
+                                        //     padding: const EdgeInsets.only(
+                                        //       left: 8.0,
+                                        //     ),
+                                        //     child: SmallPlayer(
+                                        //       audioAsset: piece.audioUrl!,
+                                        //     ),
+                                        //   ),
                                       ],
                                     ),
                                     const SizedBox(height: 10),

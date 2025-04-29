@@ -15,7 +15,7 @@ class ListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final floor = floor6;
 
-    final ArtSection? currentSection = floor.sections.firstWhere(
+    final ArtSection currentSection = floor.sections.firstWhere(
       (s) => s.pieces.isNotEmpty,
       orElse: () => floor.sections.first,
     );
@@ -158,6 +158,7 @@ class ListPage extends StatelessWidget {
                       floor.sections
                           .expand((section) => section.pieces)
                           .toList(),
+                  currentSection: currentSection,
                   onPieceTap: (piece) {
                     Navigator.push(
                       context,
@@ -200,7 +201,7 @@ class ListPage extends StatelessWidget {
                   decoration: const BoxDecoration(color: Colors.transparent),
                   child: SectionList(
                     floor: floor,
-                    currentSection: currentSection!,
+                    currentSection: currentSection,
                   ),
                 ),
               ],

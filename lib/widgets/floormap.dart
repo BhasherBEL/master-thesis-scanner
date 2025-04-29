@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
+import 'package:thesis_scanner/consts.dart';
 
 class FloorMap extends StatelessWidget {
   final ArtFloor floor;
@@ -112,9 +113,8 @@ class FloorMap extends StatelessWidget {
 
               if (currentSection != null)
                 Positioned(
-                  left:
-                      mapX((currentSection!.x0 + currentSection!.x1) / 2) - 12,
-                  top: mapY((currentSection!.y0 + currentSection!.y1) / 2) - 12,
+                  left: mapX(user.X.toDouble()) - 12,
+                  top: mapY(user.Y.toDouble()) - 12,
                   width: 24,
                   height: 24,
                   child: IgnorePointer(

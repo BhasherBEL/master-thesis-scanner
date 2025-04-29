@@ -11,8 +11,8 @@ import 'package:thesis_scanner/utils/localize.dart';
 class User extends ChangeNotifier {
   final List<Device> devices;
   final List<POI> pois;
-  num X = 0;
-  num Y = 0;
+  num X = 32;
+  num Y = 4;
   final List<Entry> entries = [];
   final List<Experiment> experiments = [];
   Experiment? experiment;
@@ -21,10 +21,7 @@ class User extends ChangeNotifier {
   num? poiDist;
   int poiCount = 0;
 
-  User(
-    this.devices,
-    this.pois,
-  );
+  User(this.devices, this.pois);
 
   void update() {
     updateLocation();
@@ -86,5 +83,20 @@ class User extends ChangeNotifier {
       experiment = null;
       notifyListeners();
     }
+  }
+
+  num getDistance(num x, num y) {
+    return sqrt(pow(X - x, 2) + pow(Y - y, 2));
+  }
+
+  num getRoundedDistance(num x, num y) {
+    num realDistance = getDistance(x, y);
+    num realSteps = realDistance / 0.65;
+
+    if (realSteps < 20) {
+      return (realSteps / 5).round() * 5;
+    }
+
+    return (realSteps / 10).round() * 10;
   }
 }
