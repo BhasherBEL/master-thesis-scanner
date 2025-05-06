@@ -49,11 +49,6 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     final floor = floor6;
 
-    final ArtSection currentSection = floor.sections.firstWhere(
-      (s) => s.pieces.isNotEmpty,
-      orElse: () => floor.sections.first,
-    );
-
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Column(
@@ -98,8 +93,8 @@ class _ListPageState extends State<ListPage> {
                   expandedHeight: 110,
                   flexibleSpace: LayoutBuilder(
                     builder: (context, constraints) {
-                      final double minExtent = kToolbarHeight;
-                      final double maxExtent = 140;
+                      const double minExtent = kToolbarHeight;
+                      const double maxExtent = 140;
                       final double t = ((constraints.maxHeight - minExtent) /
                               (maxExtent - minExtent))
                           .clamp(0.0, 1.0);
@@ -211,7 +206,6 @@ class _ListPageState extends State<ListPage> {
                           padding: const EdgeInsets.all(16),
                           child: FloorMap(
                             floor: floor,
-                            currentSection: currentSection,
                             onSectionTap: (section) {
                               Navigator.push(
                                 context,
@@ -250,7 +244,6 @@ class _ListPageState extends State<ListPage> {
                             floor.sections
                                 .expand((section) => section.pieces)
                                 .toList(),
-                        currentSection: currentSection,
                         onPieceTap: (piece) {
                           Navigator.push(
                             context,
@@ -293,10 +286,7 @@ class _ListPageState extends State<ListPage> {
                         decoration: const BoxDecoration(
                           color: Colors.transparent,
                         ),
-                        child: SectionList(
-                          floor: floor,
-                          currentSection: currentSection,
-                        ),
+                        child: SectionList(floor: floor),
                       ),
                     ],
                   ),

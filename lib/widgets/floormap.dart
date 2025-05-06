@@ -6,14 +6,12 @@ import 'package:thesis_scanner/user.dart';
 
 class FloorMap extends StatelessWidget {
   final ArtFloor floor;
-  final ArtSection? currentSection;
   final void Function(ArtSection)? onSectionTap;
   final void Function(ArtPiece)? onPieceTap;
 
   const FloorMap({
     super.key,
     required this.floor,
-    this.currentSection,
     this.onSectionTap,
     this.onPieceTap,
   });
@@ -42,7 +40,7 @@ class FloorMap extends StatelessWidget {
                 final y1 = mapY(section.y1);
                 final top = y1 < y0 ? y1 : y0;
                 final height = (y1 - y0).abs();
-                final bool isCurrent = currentSection == section;
+                final bool isCurrent = user.currentSection == section;
                 return Positioned(
                   left: left,
                   top: top,
@@ -113,32 +111,35 @@ class FloorMap extends StatelessWidget {
                 );
               }),
 
-              if (currentSection != null)
-                ChangeNotifierProvider<User>.value(
-                  value: user,
-                  child: Positioned(
-                    left: mapX(user.X.toDouble()) - 12,
-                    top: mapY(user.Y.toDouble()) - 12,
-                    width: 24,
-                    height: 24,
-                    child: IgnorePointer(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.person_pin_circle,
-                            color: Colors.white,
-                            size: 18,
+              ChangeNotifierProvider<User>.value(
+                value: user,
+                child: Consumer<User>(
+                  builder: (context, user, _) {
+                    return Positioned(
+                      left: mapX(user.X.toDouble()) - 12,
+                      top: mapY(user.Y.toDouble()) - 12,
+                      width: 24,
+                      height: 24,
+                      child: IgnorePointer(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 3),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.person_pin_circle,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
+              ),
             ],
           );
         },

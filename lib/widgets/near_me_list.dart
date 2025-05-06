@@ -5,22 +5,24 @@ import 'package:thesis_scanner/consts.dart';
 
 class NearMeList extends StatelessWidget {
   final List<ArtPiece> pieces;
-  final ArtSection currentSection;
   final void Function(ArtPiece) onPieceTap;
 
-  const NearMeList({
-    super.key,
-    required this.currentSection,
-    required this.pieces,
-    required this.onPieceTap,
-  });
+  const NearMeList({super.key, required this.pieces, required this.onPieceTap});
 
   @override
   Widget build(BuildContext context) {
     final currentSectionPieces =
-        pieces.where((p) => currentSection.pieces.contains(p)).toList();
+        user.currentSection == null
+            ? <ArtPiece>[]
+            : pieces
+                .where((p) => user.currentSection!.pieces.contains(p))
+                .toList();
     final otherPieces =
-        pieces.where((p) => !currentSection.pieces.contains(p)).toList();
+        user.currentSection == null
+            ? pieces
+            : pieces
+                .where((p) => !user.currentSection!.pieces.contains(p))
+                .toList();
 
     currentSectionPieces.sort(
       (a, b) =>

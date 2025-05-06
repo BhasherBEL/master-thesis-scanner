@@ -52,7 +52,12 @@ class Localization extends ChangeNotifier {
   }
 
   void startBeaconRanging() {
+    isEnabled = true;
+    print('HAS PERMISSION:$isEnabled');
     if (!isEnabled) return;
+    print('STARTING BEACON RANGING');
+
+    // HERE
 
     flutterBeacon.ranging(regions).listen((RangingResult result) {
       for (Device device in user.devices) {
@@ -83,6 +88,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _initLocalizationAndBeacon();
+  }
+
+  void _initLocalizationAndBeacon() async {
+    await localization.init();
     localization.startBeaconRanging();
   }
 

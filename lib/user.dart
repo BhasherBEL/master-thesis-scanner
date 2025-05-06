@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:thesis_scanner/art.dart';
+import 'package:thesis_scanner/arts.dart';
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/entry.dart';
 import 'package:thesis_scanner/experiment.dart';
@@ -11,21 +13,25 @@ import 'package:thesis_scanner/utils/localize.dart';
 class User extends ChangeNotifier {
   final List<Device> devices;
   final List<POI> pois;
-  num X = 32;
-  num Y = 4;
+  num X = 0;
+  num Y = 0;
   final List<Entry> entries = [];
   final List<Experiment> experiments = [];
   Experiment? experiment;
 
   POI? currentPoi;
+  ArtSection? currentSection;
   num? poiDist;
   int poiCount = 0;
 
-  User(this.devices, this.pois);
+  User(this.devices, this.pois) {
+    updateSection();
+  }
 
   void update() {
     updateLocation();
     updatePoi();
+    updateSection();
     if (experiment != null) {
       experiment?.record(this);
       notifyListeners();
@@ -59,6 +65,23 @@ class User extends ChangeNotifier {
           poiCount = 1;
         }
       }
+    }
+  }
+
+  void updateSection() {
+    ArtSection? found;
+    // TODO: generalize
+    for (final section in floor6.sections) {
+      final inX = X >= section.x0 && X <= section.x1;
+      final inY = Y >= section.y0 && Y <= section.y1;
+      if (inX && inY) {
+        found = section;
+        break;
+      }
+    }
+    if (currentSection != found) {
+      currentSection = found;
+      notifyListeners();
     }
   }
 

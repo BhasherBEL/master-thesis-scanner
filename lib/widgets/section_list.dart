@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
+import 'package:thesis_scanner/consts.dart';
 import 'package:thesis_scanner/pages/section.dart';
 import 'package:thesis_scanner/utils/colors.dart';
 
 class SectionList extends StatelessWidget {
   final ArtFloor floor;
-  final ArtSection currentSection;
 
-  const SectionList({
-    super.key,
-    required this.floor,
-    required this.currentSection,
-  });
+  const SectionList({super.key, required this.floor});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +19,7 @@ class SectionList extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final ArtSection section = floor.sections[index];
-        final bool isCurrent = currentSection == section;
+        final bool isCurrent = user.currentSection == section;
         return GestureDetector(
           onTap: () {
             Navigator.push(
