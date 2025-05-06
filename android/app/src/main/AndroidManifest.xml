@@ -19,9 +19,9 @@
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
     <application
-        android:label="scanner"
+        android:label="Thesis Musée L"
         android:name="${applicationName}"
-				android:icon="@mipmap/ic_launcher">
+				android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
