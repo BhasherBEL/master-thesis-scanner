@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/consts.dart';
+import 'package:thesis_scanner/user.dart';
 
 class FloorMap extends StatelessWidget {
   final ArtFloor floor;
@@ -112,23 +114,26 @@ class FloorMap extends StatelessWidget {
               }),
 
               if (currentSection != null)
-                Positioned(
-                  left: mapX(user.X.toDouble()) - 12,
-                  top: mapY(user.Y.toDouble()) - 12,
-                  width: 24,
-                  height: 24,
-                  child: IgnorePointer(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.person_pin_circle,
-                          color: Colors.white,
-                          size: 18,
+                ChangeNotifierProvider<User>.value(
+                  value: user,
+                  child: Positioned(
+                    left: mapX(user.X.toDouble()) - 12,
+                    top: mapY(user.Y.toDouble()) - 12,
+                    width: 24,
+                    height: 24,
+                    child: IgnorePointer(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.person_pin_circle,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ),
                     ),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/arts.dart';
+import 'package:thesis_scanner/audio_manager.dart';
 import 'package:thesis_scanner/consts.dart';
 import 'package:thesis_scanner/pages/piece.dart';
 import 'package:thesis_scanner/pages/section.dart';
 import 'package:thesis_scanner/widgets/floormap.dart';
 import 'package:thesis_scanner/widgets/near_me_list.dart';
+import 'package:thesis_scanner/widgets/player.dart';
 import 'package:thesis_scanner/widgets/section_list.dart';
 import 'package:thesis_scanner/utils/colors.dart';
 
@@ -21,17 +23,27 @@ class _ListPageState extends State<ListPage> {
   void initState() {
     super.initState();
     localization.addListener(_onLocalizationChanged);
+    AudioManager().addListener(_onAudioManagerChanged);
   }
 
   @override
   void dispose() {
     localization.removeListener(_onLocalizationChanged);
+    AudioManager().removeListener(_onAudioManagerChanged);
     super.dispose();
   }
 
   void _onLocalizationChanged() {
+    if (!mounted) return;
     setState(() {});
   }
+
+  void _onAudioManagerChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  String? get currentAudio => AudioManager().currentAudio;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +58,7 @@ class _ListPageState extends State<ListPage> {
       backgroundColor: Colors.grey[100],
       body: Column(
         children: [
+          if (currentAudio != null) AudioBar(audioAsset: currentAudio!),
           if (!localization.isEnabled)
             Container(
               width: double.infinity,

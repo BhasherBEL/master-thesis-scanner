@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:thesis_scanner/audio_manager.dart';
 import 'package:thesis_scanner/consts.dart';
 
 import 'package:thesis_scanner/device.dart';
@@ -15,6 +16,7 @@ import 'package:thesis_scanner/utils/mqtt.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLogging();
+  AudioManager().init();
 
   runApp(const MyApp());
 

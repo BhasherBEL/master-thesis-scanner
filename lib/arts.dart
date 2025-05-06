@@ -4,7 +4,7 @@ final artAncien = ArtCollection("Art Ancien");
 
 final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812, [
   ArtSection("0. Introduction", "ciel.m4a", 13.25, 6.312, 21.75, 9.312, []),
-  ArtSection("1. Oeuvres de maîtres", "ciel.m4a", 29.25, 0.5, 34.917, 9.312, [
+  ArtSection("1. Oeuvres de maîtres", "zombie.m4a", 29.25, 0.5, 34.917, 9.312, [
     ArtPiece(
       "La ville lunaire II",
       "Paysage nocturne surnaturel de Paul Delvaux où une femme erre dans une ville étrange.",
@@ -20,7 +20,7 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       6.5,
     ),
   ]),
-  ArtSection("2. Masques", "ciel.m4a", 24.25, 0.5, 28.75, 9.312, [
+  ArtSection("2. Masques", "jmetire.m4a", 24.25, 0.5, 28.75, 9.312, [
     ArtPiece(
       "Masque de théâtre nô. Kasshiki",
       "Masque japonais du théâtre nô représentant un jeune moine, au visage énigmatique.",
