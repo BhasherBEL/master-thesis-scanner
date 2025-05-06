@@ -1,24 +1,71 @@
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:thesis_scanner/consts.dart';
 
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/pages/debug.dart';
 import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/record.dart';
-import 'package:thesis_scanner/poi.dart';
-import 'package:thesis_scanner/user.dart';
 import 'package:thesis_scanner/utils/logging.dart';
 import 'package:thesis_scanner/utils/mqtt.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await flutterBeacon.initializeAndCheckScanning;
   await initLogging();
-  await mqttConnect('scanner_app');
 
   runApp(const MyApp());
+
+  await localization.init();
+  await mqttConnect('scanner_app');
+}
+
+class Localization extends ChangeNotifier {
+  bool isEnabled = false;
+
+  Future<void> init() async {
+    try {
+      await askBluetooth();
+      await flutterBeacon.initializeAndCheckScanning;
+    } on PlatformException catch (e) {
+      print('-------------- ERROR ON LOC INIT --------------');
+      print(e);
+      print('-------------- END ERROR --------------');
+    }
+  }
+
+  Future<void> askBluetooth() async {
+    if (await Permission.bluetoothConnect.isDenied) {
+      isEnabled = await Permission.bluetoothConnect.request().isGranted;
+      print('ASKED:');
+      print(isEnabled);
+    } else {
+      isEnabled = await Permission.bluetoothScan.isGranted;
+      print('ALREADY:');
+      print(isEnabled);
+    }
+    notifyListeners();
+  }
+
+  void startBeaconRanging() {
+    if (!isEnabled) return;
+
+    flutterBeacon.ranging(regions).listen((RangingResult result) {
+      for (Device device in user.devices) {
+        Beacon? beacon = result.beacons.firstWhereOrNull(
+          (b) =>
+              b.proximityUUID.toLowerCase() == device.uuid.toLowerCase() &&
+              b.major == device.major &&
+              b.minor == device.minor,
+        );
+
+        device.addEntry(beacon?.rssi);
+      }
+      user.update();
+    });
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -30,33 +77,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var record = true;
-  bool arePermissionsGranted = false;
-  bool isBluetoothEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    startBeaconRanging();
-  }
-
-  void startBeaconRanging() {
-    flutterBeacon.ranging(regions).listen((RangingResult result) {
-      if (record) {
-        setState(() {
-          for (Device device in user.devices) {
-            Beacon? beacon = result.beacons.firstWhereOrNull(
-              (b) =>
-                  b.proximityUUID.toLowerCase() == device.uuid.toLowerCase() &&
-                  b.major == device.major &&
-                  b.minor == device.minor,
-            );
-
-            device.addEntry(beacon?.rssi);
-          }
-          user.update();
-        });
-      }
-    });
+    localization.startBeaconRanging();
   }
 
   @override

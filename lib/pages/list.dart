@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/arts.dart';
+import 'package:thesis_scanner/consts.dart';
 import 'package:thesis_scanner/pages/piece.dart';
 import 'package:thesis_scanner/pages/section.dart';
 import 'package:thesis_scanner/widgets/floormap.dart';
@@ -8,8 +9,29 @@ import 'package:thesis_scanner/widgets/near_me_list.dart';
 import 'package:thesis_scanner/widgets/section_list.dart';
 import 'package:thesis_scanner/utils/colors.dart';
 
-class ListPage extends StatelessWidget {
+class ListPage extends StatefulWidget {
   const ListPage({super.key});
+
+  @override
+  State<ListPage> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  @override
+  void initState() {
+    super.initState();
+    localization.addListener(_onLocalizationChanged);
+  }
+
+  @override
+  void dispose() {
+    localization.removeListener(_onLocalizationChanged);
+    super.dispose();
+  }
+
+  void _onLocalizationChanged() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,186 +44,248 @@ class ListPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: primaryColor,
-            pinned: true,
-            expandedHeight: 140,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Padding(
-                padding: const EdgeInsets.only(
-                  top: 0,
-                  left: 24,
-                  right: 24,
-                  bottom: 0,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: Column(
+        children: [
+          if (!localization.isEnabled)
+            Container(
+              width: double.infinity,
+              height: 60,
+              color: Colors.grey[300],
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.museum, size: 36, color: Colors.white),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Musée Virtuel",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.95),
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                          Text(
-                            floor.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'Bluetooth is not enabled.',
+                      style: TextStyle(
+                        color: Color(0xFFB00020),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.info_outline, color: Colors.white),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder:
-                              (context) => AlertDialog(
-                                title: const Text("À propos de ce plan"),
-                                content: const Text(
-                                  "Explorez les différentes sections du musée en utilisant la carte interactive ou la liste ci-dessous.",
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text("Fermer"),
-                                  ),
-                                ],
-                              ),
-                        );
-                      },
+                    SizedBox(height: 4),
+                    Text(
+                      'Some functions may not work as expected.',
+                      style: TextStyle(
+                        color: Color(0xFFB00020),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Plan du musée",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color(0xFF22223B),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(16),
-                    child: FloorMap(
-                      floor: floor,
-                      currentSection: currentSection,
-                      onSectionTap: (section) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    SectionPage(floor: floor, section: section),
-                          ),
-                        );
-                      },
-                      onPieceTap: (piece) {},
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Près de moi",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color(0xFF22223B),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                NearMeList(
-                  pieces:
-                      floor.sections
-                          .expand((section) => section.pieces)
-                          .toList(),
-                  currentSection: currentSection,
-                  onPieceTap: (piece) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => PiecePage(
-                              piece: piece,
-                              getFlag: (country) {
-                                switch (country) {
-                                  case "Pays-Bas":
-                                    return "🇳🇱";
-                                  default:
-                                    return "❓";
-                                }
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: primaryColor,
+                  pinned: true,
+                  expandedHeight: 110,
+                  flexibleSpace: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final double minExtent = kToolbarHeight;
+                      final double maxExtent = 140;
+                      final double t = ((constraints.maxHeight - minExtent) /
+                              (maxExtent - minExtent))
+                          .clamp(0.0, 1.0);
+
+                      return FlexibleSpaceBar(
+                        title: Row(
+                          children: [
+                            const Icon(
+                              Icons.museum,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (t > 0.5)
+                                    Text(
+                                      "Musée Virtuel",
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.95),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        letterSpacing: 1.1,
+                                      ),
+                                    ),
+                                  Text(
+                                    floor.title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      letterSpacing: 1.2,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            IconButton(
+                              icon: const Icon(
+                                Icons.info_outline,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => AlertDialog(
+                                        title: const Text(
+                                          "À propos de ce plan",
+                                        ),
+                                        content: const Text(
+                                          "Explorez les différentes sections du musée en utilisant la carte interactive ou la liste ci-dessous.",
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(context),
+                                            child: const Text("Fermer"),
+                                          ),
+                                        ],
+                                      ),
+                                );
                               },
                             ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 18),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Toutes les sections",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color(0xFF22223B),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                          ],
+                        ),
+                        titlePadding: const EdgeInsetsDirectional.only(
+                          start: 16,
+                          bottom: 16,
+                          end: 8,
+                        ),
+                        background: null,
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  margin: const EdgeInsets.only(top: 8),
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  child: SectionList(
-                    floor: floor,
-                    currentSection: currentSection,
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 8),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Plan du musée",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Color(0xFF22223B),
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.all(16),
+                          child: FloorMap(
+                            floor: floor,
+                            currentSection: currentSection,
+                            onSectionTap: (section) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => SectionPage(
+                                        floor: floor,
+                                        section: section,
+                                      ),
+                                ),
+                              );
+                            },
+                            onPieceTap: (piece) {},
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Près de moi",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Color(0xFF22223B),
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      NearMeList(
+                        pieces:
+                            floor.sections
+                                .expand((section) => section.pieces)
+                                .toList(),
+                        currentSection: currentSection,
+                        onPieceTap: (piece) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => PiecePage(
+                                    piece: piece,
+                                    getFlag: (country) {
+                                      switch (country) {
+                                        case "Pays-Bas":
+                                          return "🇳🇱";
+                                        default:
+                                          return "❓";
+                                      }
+                                    },
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 18),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Toutes les sections",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Color(0xFF22223B),
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        child: SectionList(
+                          floor: floor,
+                          currentSection: currentSection,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
