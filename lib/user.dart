@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis_scanner/art.dart';
 import 'package:thesis_scanner/arts.dart';
+import 'package:thesis_scanner/audio_manager.dart';
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/entry.dart';
 import 'package:thesis_scanner/experiment.dart';
@@ -26,8 +28,37 @@ class User extends ChangeNotifier {
   num? poiDist;
   int poiCount = 0;
 
+  int audioProgressIndex = 0;
+  Set<int> playedSections = {};
+  bool _audioManagerListenerAdded = false;
+
   User(this.devices, this.pois) {
     updateSection();
+    _addAudioManagerListener();
+  }
+
+  void _addAudioManagerListener() {
+    if (_audioManagerListenerAdded) return;
+    AudioManager().addListener(_onAudioManagerChanged);
+    _audioManagerListenerAdded = true;
+  }
+
+  void _onAudioManagerChanged() {
+    if (AudioManager().playerState == PlayerState.completed) {
+      playedSections.add(audioProgressIndex);
+      audioProgressIndex++;
+      notifyListeners();
+    } else if (AudioManager().playerState == PlayerState.playing) {
+      if (currentSection != null &&
+          floor6.sections.asMap().containsKey(audioProgressIndex) &&
+          floor6.sections[audioProgressIndex] == currentSection &&
+          !playedSections.contains(audioProgressIndex) &&
+          AudioManager().currentAudio == currentSection?.audioUrl) {
+        playedSections.add(audioProgressIndex);
+        audioProgressIndex++;
+        notifyListeners();
+      }
+    }
   }
 
   void update() {
@@ -82,6 +113,8 @@ class User extends ChangeNotifier {
           break;
         }
       }
+    } else {
+      return;
     }
 
     if (_lastFoundSection == found) {
@@ -93,7 +126,22 @@ class User extends ChangeNotifier {
     if (currentSection != found && _sectionFoundCount >= 3) {
       print('Section changed: ${currentSection?.title} -> ${found?.title}');
       currentSection = found;
+
       notifyListeners();
+    }
+
+    // Audio progression logic
+    if (currentSection != null &&
+        floor6.sections.asMap().containsKey(audioProgressIndex) &&
+        floor6.sections[audioProgressIndex] == currentSection &&
+        !playedSections.contains(audioProgressIndex)) {
+      final section = floor6.sections[audioProgressIndex];
+      if (section.audioUrl != null &&
+          section.audioUrl!.isNotEmpty &&
+          (AudioManager().currentAudio != section.audioUrl! ||
+              AudioManager().playerState != PlayerState.playing)) {
+        AudioManager().play(section.audioUrl!);
+      }
     }
   }
 
@@ -101,6 +149,13 @@ class User extends ChangeNotifier {
     entries.clear();
     experiment = Experiment(theoricalExperiment, devices, pois);
     print('Experiment started: ${theoricalExperiment.name}');
+    notifyListeners();
+  }
+
+  void resetAudioProgression() {
+    audioProgressIndex = 0;
+    playedSections.clear();
+    AudioManager().stop();
     notifyListeners();
   }
 
