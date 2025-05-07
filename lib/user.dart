@@ -34,8 +34,8 @@ class User extends ChangeNotifier {
     updateSection();
     if (experiment != null) {
       experiment?.record(this);
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   void updateLocation() {
@@ -80,6 +80,7 @@ class User extends ChangeNotifier {
       }
     }
     if (currentSection != found) {
+      print('Section changed: ${currentSection?.title} -> ${found?.title}');
       currentSection = found;
       notifyListeners();
     }

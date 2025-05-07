@@ -1,15 +1,21 @@
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:thesis_scanner/arts.dart';
 import 'package:thesis_scanner/audio_manager.dart';
 import 'package:thesis_scanner/consts.dart';
+import 'package:thesis_scanner/data.dart';
 
 import 'package:thesis_scanner/device.dart';
 import 'package:thesis_scanner/pages/debug.dart';
 import 'package:thesis_scanner/pages/list.dart';
 import 'package:thesis_scanner/pages/record.dart';
+
 import 'package:thesis_scanner/utils/logging.dart';
 import 'package:thesis_scanner/utils/mqtt.dart';
 
@@ -134,6 +140,9 @@ class _MyAppState extends State<MyApp> {
                               ),
                             );
                             break;
+                          case 'replay':
+                            _handleReplay(context);
+                            break;
                           default:
                             break;
                         }
@@ -145,6 +154,7 @@ class _MyAppState extends State<MyApp> {
                             value: 'experiment',
                             child: Text('Experiment'),
                           ),
+                          PopupMenuItem(value: 'replay', child: Text('Replay')),
                           PopupMenuItem(value: 'debug', child: Text('Debug')),
                         ],
                   ),
@@ -154,5 +164,46 @@ class _MyAppState extends State<MyApp> {
             ),
       ),
     );
+  }
+
+  void _handleReplay(BuildContext context) {
+    final csv = raw_experimental_data.trim();
+    final lines = LineSplitter.split(csv).toList();
+    if (lines.length < 2) return;
+
+    final dataLines = lines.sublist(1);
+
+    DateTime? initialTime;
+
+    for (final line in dataLines) {
+      final values = line.split(',').toList();
+
+      final time = values[2];
+      final beacon1 = values[7];
+      final beacon2 = values[10];
+      final beacon3 = values[13];
+      final beacon4 = values[16];
+
+      initialTime ??= DateTime.parse(time);
+      final deltaTime = DateTime.parse(time).difference(initialTime);
+
+      Timer(deltaTime, () {
+        for (final device in user.devices) {
+          if (device.name == 'ESP32-1') {
+            device.addEntry(int.tryParse(beacon1));
+          } else if (device.name == 'ESP32-2') {
+            device.addEntry(int.tryParse(beacon2));
+          } else if (device.name == 'ESP32-3') {
+            device.addEntry(int.tryParse(beacon3));
+          } else if (device.name == 'ESP32-4') {
+            device.addEntry(int.tryParse(beacon4));
+          }
+        }
+        user.update();
+        print(
+          'Replay: $time - $beacon1 - $beacon2 - $beacon3 - $beacon4 - ${user.X} - ${user.Y}',
+        );
+      });
+    }
   }
 }

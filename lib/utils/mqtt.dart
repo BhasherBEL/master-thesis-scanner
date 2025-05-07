@@ -19,7 +19,8 @@ Future<void> mqttConnect(String udid) async {
       .authenticateAs(mqttUser, mqttPassword)
       .withWillTopic('users/scanner/$udid/status')
       .withWillMessage(
-          '{"status": "offline", "timestamp": ${DateTime.now().millisecondsSinceEpoch}}')
+        '{"status": "offline", "timestamp": ${DateTime.now().millisecondsSinceEpoch}}',
+      )
       .startClean()
       .withWillQos(MqttQos.atLeastOnce);
   client?.connectionMessage = connMessage;
@@ -48,8 +49,9 @@ void mqttListener(List<MqttReceivedMessage<MqttMessage?>>? c) {
   if (c == null) return;
   final topic = c[0].topic;
   final recMessage = c[0].payload as MqttPublishMessage;
-  final payload =
-      MqttPublishPayload.bytesToStringAsString(recMessage.payload.message);
+  final payload = MqttPublishPayload.bytesToStringAsString(
+    recMessage.payload.message,
+  );
 
   if (topic.startsWith('ibeacon/devices/')) {
     final deviceId = topic.split('/')[2];
@@ -72,6 +74,8 @@ void storeDeviceData(String deviceId, String data) {
     final X = jsonData['X']?.toDouble() ?? 0.0;
     final Y = jsonData['Y']?.toDouble() ?? 0.0;
     final am = jsonData['am']?.toDouble() ?? 0.0;
+
+    print(name);
 
     Device d = Device(name, uuid, major, minor, txPower, X, Y, am);
     Device.addOrUpdateDevice(d);
