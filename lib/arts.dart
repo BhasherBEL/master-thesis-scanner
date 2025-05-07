@@ -3,7 +3,15 @@ import 'package:thesis_scanner/art.dart';
 final artAncien = ArtCollection("Art Ancien");
 
 final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812, [
-  ArtSection("0. Introduction", "ciel.m4a", 13.25, 6.312, 21.75, 9.312, []),
+  ArtSection(
+    "0. Introduction",
+    "ciel.m4a",
+    13.25,
+    5.312,
+    21.75,
+    9.312,
+    [],
+  ), // 6.312
   ArtSection("1. Oeuvres de maîtres", "zombie.m4a", 29.25, 0.5, 34.917, 9.312, [
     ArtPiece(
       "La ville lunaire II",
@@ -36,7 +44,8 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       2,
     ),
   ]),
-  ArtSection("3. Statues", "ciel.m4a", 13.25, 0.5, 21.75, 3.812, [
+  ArtSection("3. Statues", "ciel.m4a", 13.25, 0.5, 21.75, 4.812, [
+    // 3.812
     ArtPiece(
       "Tambour à fente monumental (atingting)",
       "Grand tambour en bois sculpté de Vanuatu, utilisé pour la musique et la communication.",

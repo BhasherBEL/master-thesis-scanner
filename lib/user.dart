@@ -21,6 +21,8 @@ class User extends ChangeNotifier {
 
   POI? currentPoi;
   ArtSection? currentSection;
+  ArtSection? _lastFoundSection;
+  int _sectionFoundCount = 0;
   num? poiDist;
   int poiCount = 0;
 
@@ -70,16 +72,25 @@ class User extends ChangeNotifier {
 
   void updateSection() {
     ArtSection? found;
-    // TODO: generalize
-    for (final section in floor6.sections) {
-      final inX = X >= section.x0 && X <= section.x1;
-      final inY = Y >= section.y0 && Y <= section.y1;
-      if (inX && inY) {
-        found = section;
-        break;
+
+    if (X != 0 || Y != 0) {
+      for (final section in floor6.sections) {
+        final inX = X >= section.x0 && X <= section.x1;
+        final inY = Y >= section.y0 && Y <= section.y1;
+        if (inX && inY) {
+          found = section;
+          break;
+        }
       }
     }
-    if (currentSection != found) {
+
+    if (_lastFoundSection == found) {
+      _sectionFoundCount++;
+    } else {
+      _lastFoundSection = found;
+      _sectionFoundCount = 1;
+    }
+    if (currentSection != found && _sectionFoundCount >= 3) {
       print('Section changed: ${currentSection?.title} -> ${found?.title}');
       currentSection = found;
       notifyListeners();

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:thesis_scanner/arts.dart';
 import 'package:thesis_scanner/audio_manager.dart';
 import 'package:thesis_scanner/consts.dart';
 import 'package:thesis_scanner/data.dart';
@@ -119,7 +118,31 @@ class _MyAppState extends State<MyApp> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const DebugPage(),
+                                builder:
+                                    (context) => Scaffold(
+                                      appBar: AppBar(
+                                        title: const Text(
+                                          'Smart visit of Musée L',
+                                        ),
+                                        actions: <Widget>[
+                                          PopupMenuButton<String>(
+                                            onSelected: (String value) {
+                                              if (value == 'replay') {
+                                                _handleReplay(context);
+                                              }
+                                            },
+                                            itemBuilder:
+                                                (context) => const [
+                                                  PopupMenuItem(
+                                                    value: 'replay',
+                                                    child: Text('Replay'),
+                                                  ),
+                                                ],
+                                          ),
+                                        ],
+                                      ),
+                                      body: const DebugPage(),
+                                    ),
                               ),
                             );
                             break;
@@ -128,14 +151,37 @@ class _MyAppState extends State<MyApp> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => RecordPage(
-                                      record: record,
-                                      setRecord: (bool r) {
-                                        setState(() {
-                                          record = r;
-                                        });
-                                      },
-                                      user: user,
+                                    (context) => Scaffold(
+                                      appBar: AppBar(
+                                        title: const Text(
+                                          'Smart visit of Musée L',
+                                        ),
+                                        actions: <Widget>[
+                                          PopupMenuButton<String>(
+                                            onSelected: (String value) {
+                                              if (value == 'replay') {
+                                                _handleReplay(context);
+                                              }
+                                            },
+                                            itemBuilder:
+                                                (context) => const [
+                                                  PopupMenuItem(
+                                                    value: 'replay',
+                                                    child: Text('Replay'),
+                                                  ),
+                                                ],
+                                          ),
+                                        ],
+                                      ),
+                                      body: RecordPage(
+                                        record: record,
+                                        setRecord: (bool r) {
+                                          setState(() {
+                                            record = r;
+                                          });
+                                        },
+                                        user: user,
+                                      ),
                                     ),
                               ),
                             );

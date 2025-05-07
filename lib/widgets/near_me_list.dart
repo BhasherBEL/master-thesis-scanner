@@ -101,6 +101,24 @@ class NearMeList extends StatelessWidget {
                                             ),
                                   ),
                         ),
+                        if (user.currentSection != null &&
+                            user.currentSection!.pieces.contains(piece))
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(6),
+                              child: const Icon(
+                                Icons.flag,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
                         Positioned(
                           top: 180,
                           left: 6,

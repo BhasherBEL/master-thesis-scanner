@@ -28,7 +28,7 @@ class Device {
       devices[index].uuid = device.uuid;
       devices[index].major = device.major;
       devices[index].minor = device.minor;
-      devices[index].txPower = device.txPower;
+      devices[index].txPower = -69; // device.txPower;
       devices[index].X = device.X;
       devices[index].Y = device.Y;
       devices[index].am = device.am;
