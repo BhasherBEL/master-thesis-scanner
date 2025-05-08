@@ -1,21 +1,29 @@
 import 'package:thesis_scanner/art.dart';
 
 final artAncien = ArtCollection("Art Ancien");
+final person = ArtCollection("Person");
 
 final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812, [
-  ArtSection(
-    "0. Introduction",
-    "ciel-short.m4a",
-    13.25,
-    5.312,
-    21.96,
-    9.312,
-    [],
-  ), // 6.312
+  ArtSection("0. Introduction", "audio/section-0.mp3", 13.25, 5.312, 22.96, 9.312, [
+    ArtPiece(
+      "Charles Delsemme",
+      "Médecin liégeois humaniste et passionné d’art, qui a constitué durant près de quarante ans une collection éclectique reflétant sa curiosité et son goût du dialogue entre les cultures.",
+      person,
+      "1921-1990",
+      "Charles Delsemme",
+      ['Person'],
+      'Belgique',
+      'https://museel.be/sites/default/files/content/files/etage_5_regard-amateur_fr-nl-en.pdf',
+      "assets/pieces/charles-delsemme.jpg",
+      null,
+      17,
+      5.5,
+    ),
+  ]), // 6.312
   ArtSection(
     "1. Oeuvres de maîtres",
-    "zombie-short.m4a",
-    30.85,
+    "audio/section-1.mp3",
+    29.85,
     0.5,
     34.917,
     9.312,
@@ -31,12 +39,12 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
         "https://collections-museel.s-museum.be/document/la-ville-lunaire-ii-tableau/60896a2140170b4a0c93e1ce",
         "assets/pieces/la-ville-lunaire-ii.jpg",
         null,
+        34.5,
         3.5,
-        6.5,
       ),
     ],
   ),
-  ArtSection("2. Masques", "jmetire-short.m4a", 22.5, 0.5, 30.4, 9.312, [
+  ArtSection("2. Masques", "jmetire-short.m4a", 23.5, 0.5, 29.4, 9.312, [
     ArtPiece(
       "Masque de théâtre nô. Kasshiki",
       "Masque japonais du théâtre nô représentant un jeune moine, au visage énigmatique.",
@@ -48,11 +56,11 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       "https://collections-museel.s-museum.be/document/masque-de-theatre-no-kasshiki-masque/608a99c940170b4a0c95761d",
       "assets/pieces/masque-de-theatre-no-kasshiki.jpg",
       null,
-      26,
-      2,
+      25,
+      3.5,
     ),
   ]),
-  ArtSection("3. Statues", "ciel-short.m4a", 13.25, 0.5, 21.96, 4.812, [
+  ArtSection("3. Statues", "ciel-short.m4a", 13.25, 0.5, 22.96, 4.812, [
     // 3.812
     ArtPiece(
       "Tambour à fente monumental (atingting)",
@@ -83,7 +91,7 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       1,
     ),
   ]),
-  ArtSection("4. Le paradis", "ciel-short.m4a", 0.5, 5.312, 12.75, 9.312, [
+  ArtSection("4. Le paradis", "ciel-short.m4a", 0.5, 4.312, 12.75, 9.312, [
     ArtPiece(
       "Le Paradis terrestre",
       "Peinture représentant le jardin d'Éden dans une scène foisonnante et colorée.",

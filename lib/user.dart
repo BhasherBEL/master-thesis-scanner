@@ -45,20 +45,9 @@ class User extends ChangeNotifier {
 
   void _onAudioManagerChanged() {
     if (AudioManager().playerState == PlayerState.completed) {
-      playedSections.add(audioProgressIndex);
-      audioProgressIndex++;
-      notifyListeners();
-    } else if (AudioManager().playerState == PlayerState.playing) {
-      if (currentSection != null &&
-          floor6.sections.asMap().containsKey(audioProgressIndex) &&
-          floor6.sections[audioProgressIndex] == currentSection &&
-          !playedSections.contains(audioProgressIndex) &&
-          AudioManager().currentAudio == currentSection?.audioUrl) {
-        playedSections.add(audioProgressIndex);
-        audioProgressIndex++;
-        notifyListeners();
-      }
+      updateSection();
     }
+    notifyListeners();
   }
 
   void update() {
@@ -130,17 +119,22 @@ class User extends ChangeNotifier {
       notifyListeners();
     }
 
-    // Audio progression logic
+    // print('${currentSection?.title}, $audioProgressIndex, $playedSections');
+
     if (currentSection != null &&
         floor6.sections.asMap().containsKey(audioProgressIndex) &&
         floor6.sections[audioProgressIndex] == currentSection &&
         !playedSections.contains(audioProgressIndex)) {
       final section = floor6.sections[audioProgressIndex];
-      if (section.audioUrl != null &&
-          section.audioUrl!.isNotEmpty &&
-          (AudioManager().currentAudio != section.audioUrl! ||
-              AudioManager().playerState != PlayerState.playing)) {
-        AudioManager().play(section.audioUrl!);
+      if (section.audioUrl != null && section.audioUrl!.isNotEmpty) {
+        if ((AudioManager().currentAudio != section.audioUrl! ||
+                AudioManager().playerState == PlayerState.stopped) &&
+            AudioManager().playerState != PlayerState.playing) {
+          AudioManager().play(section.audioUrl!);
+          playedSections.add(audioProgressIndex);
+          audioProgressIndex++;
+          notifyListeners();
+        }
       }
     }
   }

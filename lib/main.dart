@@ -217,6 +217,9 @@ class _MyAppState extends State<MyApp> {
     final lines = LineSplitter.split(csv).toList();
     if (lines.length < 2) return;
 
+    user.playedSections.clear();
+    user.audioProgressIndex = 0;
+
     final dataLines = lines.sublist(1);
 
     DateTime? initialTime;
