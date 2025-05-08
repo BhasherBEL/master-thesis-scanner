@@ -5,30 +5,38 @@ final artAncien = ArtCollection("Art Ancien");
 final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812, [
   ArtSection(
     "0. Introduction",
-    "ciel.m4a",
+    "ciel-short.m4a",
     13.25,
     5.312,
-    21.75,
+    21.96,
     9.312,
     [],
   ), // 6.312
-  ArtSection("1. Oeuvres de maîtres", "zombie.m4a", 29.25, 0.5, 34.917, 9.312, [
-    ArtPiece(
-      "La ville lunaire II",
-      "Paysage nocturne surnaturel de Paul Delvaux où une femme erre dans une ville étrange.",
-      artAncien,
-      "1956",
-      "Paul Delvaux",
-      ["Tableau", "Art moderne", "Peinture"],
-      "Belgique",
-      "https://collections-museel.s-museum.be/document/la-ville-lunaire-ii-tableau/60896a2140170b4a0c93e1ce",
-      "assets/pieces/la-ville-lunaire-ii.jpg",
-      null,
-      3.5,
-      6.5,
-    ),
-  ]),
-  ArtSection("2. Masques", "jmetire.m4a", 24.25, 0.5, 28.75, 9.312, [
+  ArtSection(
+    "1. Oeuvres de maîtres",
+    "zombie-short.m4a",
+    30.85,
+    0.5,
+    34.917,
+    9.312,
+    [
+      ArtPiece(
+        "La ville lunaire II",
+        "Paysage nocturne surnaturel de Paul Delvaux où une femme erre dans une ville étrange.",
+        artAncien,
+        "1956",
+        "Paul Delvaux",
+        ["Tableau", "Art moderne", "Peinture"],
+        "Belgique",
+        "https://collections-museel.s-museum.be/document/la-ville-lunaire-ii-tableau/60896a2140170b4a0c93e1ce",
+        "assets/pieces/la-ville-lunaire-ii.jpg",
+        null,
+        3.5,
+        6.5,
+      ),
+    ],
+  ),
+  ArtSection("2. Masques", "jmetire-short.m4a", 22.5, 0.5, 30.4, 9.312, [
     ArtPiece(
       "Masque de théâtre nô. Kasshiki",
       "Masque japonais du théâtre nô représentant un jeune moine, au visage énigmatique.",
@@ -44,7 +52,7 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       2,
     ),
   ]),
-  ArtSection("3. Statues", "ciel.m4a", 13.25, 0.5, 21.75, 4.812, [
+  ArtSection("3. Statues", "ciel-short.m4a", 13.25, 0.5, 21.96, 4.812, [
     // 3.812
     ArtPiece(
       "Tambour à fente monumental (atingting)",
@@ -75,7 +83,7 @@ final floor6 = ArtFloor("6e étage, Le regard d'un amateur", 0, 0, 35.417, 9.812
       1,
     ),
   ]),
-  ArtSection("4. Le paradis", "ciel.m4a", 0.5, 4.812, 5.75, 9.312, [
+  ArtSection("4. Le paradis", "ciel-short.m4a", 0.5, 5.312, 12.75, 9.312, [
     ArtPiece(
       "Le Paradis terrestre",
       "Peinture représentant le jardin d'Éden dans une scène foisonnante et colorée.",

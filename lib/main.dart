@@ -229,6 +229,8 @@ class _MyAppState extends State<MyApp> {
       final beacon2 = values[10];
       final beacon3 = values[13];
       final beacon4 = values[16];
+      final beacon5 = values[19];
+      final beacon6 = values[22];
 
       initialTime ??= DateTime.parse(time);
       final deltaTime = DateTime.parse(time).difference(initialTime);
@@ -243,11 +245,15 @@ class _MyAppState extends State<MyApp> {
             device.addEntry(int.tryParse(beacon3));
           } else if (device.name == 'ESP32-4') {
             device.addEntry(int.tryParse(beacon4));
+          } else if (device.name == 'ESP32-5') {
+            device.addEntry(int.tryParse(beacon5));
+          } else if (device.name == 'ESP32-6') {
+            device.addEntry(int.tryParse(beacon6));
           }
         }
         user.update();
         print(
-          'Replay: $time - $beacon1 - $beacon2 - $beacon3 - $beacon4 - ${user.X} - ${user.Y}',
+          'Replay: $time - $beacon1 - $beacon2 - $beacon3 - $beacon4 - $beacon5 - $beacon6 - ${user.X} - ${user.Y}',
         );
       });
     }

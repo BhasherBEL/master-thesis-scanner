@@ -28,7 +28,13 @@ class Device {
       devices[index].uuid = device.uuid;
       devices[index].major = device.major;
       devices[index].minor = device.minor;
-      devices[index].txPower = -69; // device.txPower;
+      if (device.name == 'ESP32-5') {
+        devices[index].txPower = -65;
+      } else if (device.name == 'ESP32-3') {
+        devices[index].txPower = -75;
+      } else {
+        devices[index].txPower = -69; // device.txPower;
+      }
       devices[index].X = device.X;
       devices[index].Y = device.Y;
       devices[index].am = device.am;
@@ -48,7 +54,15 @@ class Device {
     this.X,
     this.Y,
     this.am,
-  );
+  ) {
+    if (name == 'ESP32-5') {
+      txPower = -65;
+    } else if (name == 'ESP32-3') {
+      txPower = -75;
+    } else {
+      txPower = -69; // device.txPower;
+    }
+  }
 
   bool compare(Beacon beacon) {
     return uuid == beacon.proximityUUID &&
