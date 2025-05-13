@@ -112,7 +112,12 @@ class User extends ChangeNotifier {
       _lastFoundSection = found;
       _sectionFoundCount = 1;
     }
-    if (currentSection != found && _sectionFoundCount >= 3) {
+    // _sectionFoundCount >= 6 &&
+    if (currentSection != found &&
+        (_sectionFoundCount >= 15 ||
+            _sectionFoundCount >= 3 &&
+                (AudioManager().playerState != PlayerState.playing ||
+                    AudioManager().currentAudio != currentSection?.audioUrl))) {
       print('Section changed: ${currentSection?.title} -> ${found?.title}');
       currentSection = found;
 
